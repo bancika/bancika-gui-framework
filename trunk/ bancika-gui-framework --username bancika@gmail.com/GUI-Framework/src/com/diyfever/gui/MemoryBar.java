@@ -34,6 +34,8 @@ public class MemoryBar extends JComponent {
 	private static final String tooltipPattern = "<html>%s MB of %s MB free<br>"
 			+ "Max %s MB is available<br>" + "Click to run the garbage collector</html>";
 
+	private static final double THRESHOLD = 0.1d;
+
 	private Thread bgThread;
 
 	private long totalMemory = 0;
@@ -41,8 +43,11 @@ public class MemoryBar extends JComponent {
 	private long maxMemory = 0;
 	private double percentFree = 0;
 
-	public MemoryBar() {
+	private boolean autoGC;
+
+	public MemoryBar(boolean autoGC) {
 		super();
+		this.autoGC = autoGC;
 
 		setPreferredSize(new Dimension(16, 20));
 		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -56,6 +61,10 @@ public class MemoryBar extends JComponent {
 					freeMemory = Runtime.getRuntime().freeMemory();
 					maxMemory = Runtime.getRuntime().maxMemory();
 					percentFree = (double) freeMemory / totalMemory;
+					// Run the garbage collector if needed.
+					if (MemoryBar.this.autoGC && percentFree < THRESHOLD) {
+						System.gc();
+					}
 					setToolTipText(String.format(tooltipPattern, format
 							.format(convertToMb(freeMemory)), format
 							.format(convertToMb(totalMemory)), format
@@ -91,7 +100,7 @@ public class MemoryBar extends JComponent {
 		g2d.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
 
 		int barHeight = (int) ((1 - percentFree) * getHeight());
-		if (percentFree < 0.1d) {
+		if (percentFree < THRESHOLD) {
 			g2d.setColor(Color.red);
 		} else {
 			g2d.setColor(UIManager.getColor("List.selectionBackground"));
