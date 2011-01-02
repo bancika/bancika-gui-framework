@@ -72,11 +72,9 @@ public class UndoHandler<T> {
 	 * @param currentState
 	 * @param changeDescription
 	 */
-	public void stateChanged(T previousState, T currentState,
-			String changeDescription) {
+	public void stateChanged(T previousState, T currentState, String changeDescription) {
 		LOG.info("Undo state changed");
-		undoStack.push(new Change(previousState, currentState,
-				changeDescription));
+		undoStack.push(new Change(previousState, currentState, changeDescription));
 		redoStack.clear();
 		refreshActions();
 	}
@@ -88,8 +86,8 @@ public class UndoHandler<T> {
 		public UndoAction() {
 			super();
 			putValue(Action.NAME, "Undo");
-			putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
-					KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
+			putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Z,
+					ActionEvent.CTRL_MASK));
 			putValue(AbstractAction.SMALL_ICON, IconLoader.Undo.getIcon());
 		}
 
@@ -114,8 +112,8 @@ public class UndoHandler<T> {
 		public RedoAction() {
 			super();
 			putValue(Action.NAME, "Redo");
-			putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
-					KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
+			putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Y,
+					ActionEvent.CTRL_MASK));
 			putValue(AbstractAction.SMALL_ICON, IconLoader.Redo.getIcon());
 		}
 
@@ -138,15 +136,13 @@ public class UndoHandler<T> {
 		if (undoStack.isEmpty()) {
 			getUndoAction().putValue(Action.NAME, "Undo");
 		} else {
-			getUndoAction().putValue(Action.NAME,
-					"Undo " + undoStack.peek().changeDescription);
+			getUndoAction().putValue(Action.NAME, "Undo " + undoStack.peek().changeDescription);
 		}
 		getRedoAction().setEnabled(!redoStack.isEmpty());
 		if (redoStack.isEmpty()) {
 			getRedoAction().putValue(Action.NAME, "Redo");
 		} else {
-			getRedoAction().putValue(Action.NAME,
-					"Redo " + redoStack.peek().changeDescription);
+			getRedoAction().putValue(Action.NAME, "Redo " + redoStack.peek().changeDescription);
 		}
 		while (undoStack.size() > MAX_STACK_SIZE) {
 			undoStack.remove(0);

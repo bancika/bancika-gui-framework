@@ -74,8 +74,7 @@ public class MessageDispatcher<E extends Enum<E>> {
 		public void run() {
 			List<IMessageListener<E>> listeners = new ArrayList<IMessageListener<E>>();
 			synchronized (mutex) {
-				for (Map.Entry<IMessageListener<E>, EnumSet<E>> entry : listenerMap
-						.entrySet()) {
+				for (Map.Entry<IMessageListener<E>, EnumSet<E>> entry : listenerMap.entrySet()) {
 					if (entry.getValue().contains(eventType)) {
 						listeners.add(entry.getKey());
 					}

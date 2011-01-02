@@ -47,7 +47,7 @@ public class TableExporter {
 		}
 		return instance;
 	}
-	
+
 	private TableExporter() {
 	}
 
@@ -101,8 +101,7 @@ public class TableExporter {
 				if (value != null) {
 					Class<?> clazz = table.getModel().getColumnClass(columnIdx);
 
-					if (short.class.isAssignableFrom(clazz)
-							|| Short.class.isAssignableFrom(clazz)) {
+					if (short.class.isAssignableFrom(clazz) || Short.class.isAssignableFrom(clazz)) {
 						cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
 						cell.setCellValue(((Short) value).intValue());
 					} else if (int.class.isAssignableFrom(clazz)
@@ -142,14 +141,13 @@ public class TableExporter {
 		LOG.info("Exporting table to HTML file: " + file.getAbsolutePath());
 		FileWriter fstream = new FileWriter(file);
 		BufferedWriter out = new BufferedWriter(fstream);
-		out
-				.write("<html><body><font face=\"Tahoma\"><table cellspacing=\"0\" border=\"1\">\n");
+		out.write("<html><body><font face=\"Tahoma\"><table cellspacing=\"0\" border=\"1\">\n");
 
 		LOG.debug("Writing header row");
 		out.write("  <tr>\n");
 		for (int i = 0; i < table.getColumnModel().getColumnCount(); i++) {
-			out.write("    <th align=\"left\" bgcolor=\"#00CCFF\">"
-					+ table.getColumnName(i) + "</th>\n");
+			out.write("    <th align=\"left\" bgcolor=\"#00CCFF\">" + table.getColumnName(i)
+					+ "</th>\n");
 		}
 		out.write("  </tr>\n");
 
@@ -162,14 +160,11 @@ public class TableExporter {
 				Object value = table.getValueAt(j, i);
 				TableCellRenderer renderer = table.getCellRenderer(j, i);
 				if (renderer != null) {
-					Component rendererComponent = renderer
-							.getTableCellRendererComponent(table, value, false,
-									false, rowIdx, columnIdx);
+					Component rendererComponent = renderer.getTableCellRendererComponent(table,
+							value, false, false, rowIdx, columnIdx);
 					try {
-						Method method = rendererComponent.getClass().getMethod(
-								"getText");
-						out.write("    <td>" + method.invoke(rendererComponent)
-								+ "</td>\n");
+						Method method = rendererComponent.getClass().getMethod("getText");
+						out.write("    <td>" + method.invoke(rendererComponent) + "</td>\n");
 					} catch (Exception e) {
 						out.write("    <td>&nbsp;</td>\n");
 					}
@@ -208,12 +203,10 @@ public class TableExporter {
 				Object value = table.getValueAt(j, i);
 				TableCellRenderer renderer = table.getCellRenderer(j, i);
 				if (renderer != null) {
-					Component rendererComponent = renderer
-							.getTableCellRendererComponent(table, value, false,
-									false, rowIdx, columnIdx);
+					Component rendererComponent = renderer.getTableCellRendererComponent(table,
+							value, false, false, rowIdx, columnIdx);
 					try {
-						Method method = rendererComponent.getClass().getMethod(
-								"getText");
+						Method method = rendererComponent.getClass().getMethod("getText");
 						out.write(method.invoke(rendererComponent).toString());
 					} catch (Exception e) {
 					}
@@ -228,10 +221,8 @@ public class TableExporter {
 		LOG.info("Exporting table to PNG file: " + file.getAbsolutePath());
 		table.clearSelection();
 		LOG.debug("Creating image");
-		BufferedImage image = new BufferedImage(table.getWidth(), table
-				.getHeight()
-				+ table.getTableHeader().getHeight(),
-				BufferedImage.TYPE_INT_RGB);
+		BufferedImage image = new BufferedImage(table.getWidth(), table.getHeight()
+				+ table.getTableHeader().getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2d = image.createGraphics();
 		LOG.debug("Painting the header");
 		table.getTableHeader().paint(g2d);

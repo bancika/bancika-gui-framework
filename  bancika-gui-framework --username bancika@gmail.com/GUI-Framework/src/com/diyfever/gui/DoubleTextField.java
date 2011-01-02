@@ -23,8 +23,7 @@ public class DoubleTextField extends JTextField {
 	private static final long serialVersionUID = 1L;
 
 	private Double value;
-	private static final JLabel errorLabel = new JLabel(IconLoader.Warning
-			.getIcon());
+	private static final JLabel errorLabel = new JLabel(IconLoader.Warning.getIcon());
 	static {
 		errorLabel.setBorder(BorderFactory.createEmptyBorder(3, 0, 0, 0));
 	}

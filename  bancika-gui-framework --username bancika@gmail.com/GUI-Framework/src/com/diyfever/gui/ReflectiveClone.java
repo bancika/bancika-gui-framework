@@ -78,8 +78,7 @@ public abstract class ReflectiveClone {
 	 * @param metadataMap
 	 *            maps a Class object to its ClassMetadata.
 	 */
-	private static Object clone(final Object obj, final Map objMap,
-			final Map metadataMap) {
+	private static Object clone(final Object obj, final Map objMap, final Map metadataMap) {
 		if (DEBUG)
 			System.out.println("traversing src obj [" + obj + "]");
 
@@ -107,16 +106,14 @@ public abstract class ReflectiveClone {
 				result = Array.newInstance(componentType, arrayLength);
 				objMap.put(obj, result);
 
-				if (componentType.isPrimitive()
-						|| FINAL_IMMUTABLE_CLASSES.contains(componentType)) {
+				if (componentType.isPrimitive() || FINAL_IMMUTABLE_CLASSES.contains(componentType)) {
 					System.arraycopy(obj, 0, result, 0, arrayLength);
 				} else {
 					for (int i = 0; i < arrayLength; ++i) {
 						// recursively clone each array slot:
 						final Object slot = Array.get(obj, i);
 						if (slot != null) {
-							final Object slotClone = clone(slot, objMap,
-									metadataMap);
+							final Object slotClone = clone(slot, objMap, metadataMap);
 							Array.set(result, i, slotClone);
 						}
 					}
@@ -156,10 +153,8 @@ public abstract class ReflectiveClone {
 				try {
 					noarg.setAccessible(true);
 				} catch (SecurityException e) {
-					throw new RuntimeException(
-							"cannot access noarg constructor [" + noarg
-									+ "] of class [" + objClass.getName()
-									+ "]: " + e.toString());
+					throw new RuntimeException("cannot access noarg constructor [" + noarg
+							+ "] of class [" + objClass.getName() + "]: " + e.toString());
 				}
 
 				metadata.m_noargConstructorAccessible = true;
@@ -170,9 +165,8 @@ public abstract class ReflectiveClone {
 				result = noarg.newInstance(EMPTY_OBJECT_ARRAY);
 				objMap.put(obj, result);
 			} catch (Exception e) {
-				throw new RuntimeException("cannot instantiate class ["
-						+ objClass.getName() + "] using noarg constructor: "
-						+ e.toString());
+				throw new RuntimeException("cannot instantiate class [" + objClass.getName()
+						+ "] using noarg constructor: " + e.toString());
 			}
 		}
 
@@ -189,8 +183,7 @@ public abstract class ReflectiveClone {
 				metadata.m_declaredFields = declaredFields;
 			}
 
-			setFields(obj, result, declaredFields, metadata.m_fieldsAccessible,
-					objMap, metadataMap);
+			setFields(obj, result, declaredFields, metadata.m_fieldsAccessible, objMap, metadataMap);
 			metadata.m_fieldsAccessible = true;
 		}
 
@@ -211,16 +204,14 @@ public abstract class ReflectiveClone {
 	 *            'true' if all 'fields' have been made accessible during this
 	 *            traversal
 	 */
-	private static void setFields(final Object src, final Object dest,
-			final Field[] fields, final boolean accessible, final Map objMap,
-			final Map metadataMap) {
+	private static void setFields(final Object src, final Object dest, final Field[] fields,
+			final boolean accessible, final Map objMap, final Map metadataMap) {
 		for (int f = 0, fieldsLength = fields.length; f < fieldsLength; ++f) {
 			final Field field = fields[f];
 			final int modifiers = field.getModifiers();
 
 			if (DEBUG)
-				System.out.println("dest object [" + dest + "]: field #" + f
-						+ ", [" + field + "]");
+				System.out.println("dest object [" + dest + "]: field #" + f + ", [" + field + "]");
 
 			if ((Modifier.STATIC & modifiers) != 0)
 				continue;
@@ -230,17 +221,15 @@ public abstract class ReflectiveClone {
 			// to be more like serialization
 
 			if ((Modifier.FINAL & modifiers) != 0)
-				throw new RuntimeException("cannot set final field ["
-						+ field.getName() + "] of class ["
-						+ src.getClass().getName() + "]");
+				throw new RuntimeException("cannot set final field [" + field.getName()
+						+ "] of class [" + src.getClass().getName() + "]");
 
 			if (!accessible && ((Modifier.PUBLIC & modifiers) == 0)) {
 				try {
 					field.setAccessible(true);
 				} catch (SecurityException e) {
-					throw new RuntimeException("cannot access field ["
-							+ field.getName() + "] of class ["
-							+ src.getClass().getName() + "]: " + e.toString());
+					throw new RuntimeException("cannot access field [" + field.getName()
+							+ "] of class [" + src.getClass().getName() + "]: " + e.toString());
 				}
 			}
 
@@ -250,15 +239,14 @@ public abstract class ReflectiveClone {
 
 				if (value == null) {
 					field.set(dest, null); // can't assume that the constructor
-											// left this as null
+					// left this as null
 					if (DEBUG)
-						System.out.println("set field #" + f + ", [" + field
-								+ "] of object [" + dest + "]: NULL");
+						System.out.println("set field #" + f + ", [" + field + "] of object ["
+								+ dest + "]: NULL");
 				} else {
 					final Class valueType = value.getClass();
 
-					if (!valueType.isPrimitive()
-							&& !FINAL_IMMUTABLE_CLASSES.contains(valueType)) {
+					if (!valueType.isPrimitive() && !FINAL_IMMUTABLE_CLASSES.contains(valueType)) {
 						// value is an object reference and it could be either
 						// an array
 						// or of some mutable type: try to clone it deeply to be
@@ -269,14 +257,13 @@ public abstract class ReflectiveClone {
 
 					field.set(dest, value);
 					if (DEBUG)
-						System.out.println("set field #" + f + ", [" + field
-								+ "] of object [" + dest + "]: " + value);
+						System.out.println("set field #" + f + ", [" + field + "] of object ["
+								+ dest + "]: " + value);
 				}
 			} catch (Exception e) {
 				if (DEBUG)
 					e.printStackTrace(System.out);
-				throw new RuntimeException("cannot set field ["
-						+ field.getName() + "] of class ["
+				throw new RuntimeException("cannot set field [" + field.getName() + "] of class ["
 						+ src.getClass().getName() + "]: " + e.toString());
 			}
 		}

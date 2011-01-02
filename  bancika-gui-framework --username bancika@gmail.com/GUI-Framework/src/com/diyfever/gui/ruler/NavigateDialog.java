@@ -46,8 +46,7 @@ public class NavigateDialog extends JDialog {
 
 	private IDrawingProvider provider;
 
-	public NavigateDialog(final JScrollPane scrollPane,
-			IDrawingProvider provider) {
+	public NavigateDialog(final JScrollPane scrollPane, IDrawingProvider provider) {
 		super();
 		this.provider = provider;
 		setAlwaysOnTop(true);
@@ -56,8 +55,7 @@ public class NavigateDialog extends JDialog {
 
 		requestFocus();
 
-		GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment
-				.getLocalGraphicsEnvironment();
+		GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice[] devices = graphicsEnvironment.getScreenDevices();
 		screenGraphicsConfiguration = devices[0].getDefaultConfiguration();
 
@@ -108,11 +106,11 @@ public class NavigateDialog extends JDialog {
 			int height = (int) (dim.height * scaleRatio);
 
 			setPreferredSize(new Dimension(width, height));
-			thumbnailImage = new BufferedImage(width, height,
-					BufferedImage.TYPE_INT_RGB);
+			thumbnailImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 			Graphics2D g2d = thumbnailImage.createGraphics();
-			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
+			g2d
+					.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+							RenderingHints.VALUE_ANTIALIAS_ON);
 			g2d.scale(scaleRatio, scaleRatio);
 			provider.draw(g2d);
 			g2d.setTransform(new AffineTransform());
@@ -149,11 +147,11 @@ public class NavigateDialog extends JDialog {
 					int x = (int) (getMousePosition().x / scaleRatio - DrawComponent.this.scrollPane
 							.getVisibleRect().width / 2);
 					if (x > dim.width
-							- DrawComponent.this.scrollPane.getViewport()
-									.getVisibleRect().width - 1) {
+							- DrawComponent.this.scrollPane.getViewport().getVisibleRect().width
+							- 1) {
 						x = dim.width
-								- DrawComponent.this.scrollPane.getViewport()
-										.getVisibleRect().width - 1;
+								- DrawComponent.this.scrollPane.getViewport().getVisibleRect().width
+								- 1;
 					}
 					if (x < 0) {
 						x = 0;
@@ -161,17 +159,16 @@ public class NavigateDialog extends JDialog {
 					int y = (int) (getMousePosition().y / scaleRatio - DrawComponent.this.scrollPane
 							.getVisibleRect().height / 2);
 					if (y > dim.height
-							- DrawComponent.this.scrollPane.getViewport()
-									.getVisibleRect().height - 1) {
+							- DrawComponent.this.scrollPane.getViewport().getVisibleRect().height
+							- 1) {
 						y = dim.height
-								- DrawComponent.this.scrollPane.getViewport()
-										.getVisibleRect().height - 1;
+								- DrawComponent.this.scrollPane.getViewport().getVisibleRect().height
+								- 1;
 					}
 					if (y < 0) {
 						y = 0;
 					}
-					DrawComponent.this.scrollPane.getViewport()
-							.setViewPosition(new Point(x, y));
+					DrawComponent.this.scrollPane.getViewport().setViewPosition(new Point(x, y));
 					NavigateDialog.this.setVisible(false);
 				}
 			});
@@ -184,26 +181,24 @@ public class NavigateDialog extends JDialog {
 			}
 			do {
 				Graphics2D g2d = (Graphics2D) bufferImage.createGraphics();
-				int validation = bufferImage
-						.validate(screenGraphicsConfiguration);
+				int validation = bufferImage.validate(screenGraphicsConfiguration);
 				if (validation == VolatileImage.IMAGE_INCOMPATIBLE) {
 					createBufferImage();
 				}
-				g2d.drawImage(thumbnailImage, new AffineTransform(),
-						NavigateDialog.this);
+				g2d.drawImage(thumbnailImage, new AffineTransform(), NavigateDialog.this);
 				if (getMousePosition() == null) {
 					return;
 				}
 
 				Composite oldComposite = g2d.getComposite();
 				try {
-					AlphaComposite composite = AlphaComposite.getInstance(
-							AlphaComposite.SRC_OVER, 0.1f);
+					AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+							0.1f);
 					g2d.setComposite(composite);
-					Rectangle visibleRect = ((JComponent) scrollPane.getViewport()
-							.getView()).getVisibleRect();
-//					Dimension dim = provider.getSize();
-//					double scaleRatio = 1d * visibleRect.height / dim.height;
+					Rectangle visibleRect = ((JComponent) scrollPane.getViewport().getView())
+							.getVisibleRect();
+					// Dimension dim = provider.getSize();
+					// double scaleRatio = 1d * visibleRect.height / dim.height;
 					int visibleWidth = (int) (visibleRect.getWidth() * scaleRatio);
 					int visibleHeight = (int) (visibleRect.getHeight() * scaleRatio);
 					int x = getMousePosition().x - visibleWidth / 2;
@@ -240,8 +235,8 @@ public class NavigateDialog extends JDialog {
 		}
 
 		public void createBufferImage() {
-			bufferImage = screenGraphicsConfiguration
-					.createCompatibleVolatileImage(getWidth(), getHeight());
+			bufferImage = screenGraphicsConfiguration.createCompatibleVolatileImage(getWidth(),
+					getHeight());
 		}
 	}
 }

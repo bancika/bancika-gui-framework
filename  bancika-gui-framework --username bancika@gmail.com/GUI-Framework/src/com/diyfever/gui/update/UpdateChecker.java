@@ -34,8 +34,7 @@ class UpdateChecker {
 	@SuppressWarnings("unchecked")
 	public List<Version> findNewVersions() throws Exception {
 		LOG.info("Trying to download file: " + updateFileURL);
-		BufferedInputStream in = new BufferedInputStream(new URL(updateFileURL)
-				.openStream());
+		BufferedInputStream in = new BufferedInputStream(new URL(updateFileURL).openStream());
 		XStream xStream = new XStream(new DomDriver());
 		List<Version> allVersions = (List<Version>) xStream.fromXML(in);
 		in.close();
@@ -59,14 +58,12 @@ class UpdateChecker {
 		for (Version version : versions) {
 			String changeStr = "";
 			for (Change change : version.getChanges()) {
-				changeStr += String.format(CHANGE_HTML,
-						convertChangeTypeToHTML(change.getChangeType()), change
-								.getDescription());
+				changeStr += String.format(CHANGE_HTML, convertChangeTypeToHTML(change
+						.getChangeType()), change.getDescription());
 			}
-			bodyHtml += String.format(VERSION_HTML, version.getVersionNumber()
-					.getMajor(), version.getVersionNumber().getMinor(), version
-					.getVersionNumber().getBuild(), dateFormat.format(version
-					.getReleaseDate()), changeStr);
+			bodyHtml += String.format(VERSION_HTML, version.getVersionNumber().getMajor(), version
+					.getVersionNumber().getMinor(), version.getVersionNumber().getBuild(),
+					dateFormat.format(version.getReleaseDate()), changeStr);
 		}
 		return String.format(MAIN_HTML, bodyHtml);
 	}
