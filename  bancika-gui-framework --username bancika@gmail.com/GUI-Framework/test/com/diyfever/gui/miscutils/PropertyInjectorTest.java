@@ -20,7 +20,7 @@ public class PropertyInjectorTest {
 		Properties props = new Properties();
 		int expected = 15;
 		props.put(PropertyInjectorTest.class.getName() + ".intValue", expected);
-		PropertyInjector.injectPropreties(props);
+		PropertyInjector.injectProperties(props);
 		assertEquals(expected, intValue);
 	}
 
@@ -29,7 +29,7 @@ public class PropertyInjectorTest {
 		Properties props = new Properties();
 		double expected = 123.456;
 		props.put(PropertyInjectorTest.class.getName() + ".doubleValue", Double.toString(expected));
-		PropertyInjector.injectPropreties(props);
+		PropertyInjector.injectProperties(props);
 		assertEquals(expected, doubleValue, 1e-10);
 	}
 
@@ -39,7 +39,7 @@ public class PropertyInjectorTest {
 		boolean expected = true;
 		props.put(PropertyInjectorTest.class.getName() + ".booleanValue", Boolean
 				.toString(expected));
-		PropertyInjector.injectPropreties(props);
+		PropertyInjector.injectProperties(props);
 		assertEquals(expected, booleanValue);
 	}
 
@@ -48,7 +48,7 @@ public class PropertyInjectorTest {
 		Properties props = new Properties();
 		boolean expected = true;
 		props.put(PropertyInjectorTest.class.getName() + ".stringValue", expected);
-		PropertyInjector.injectPropreties(props);
+		PropertyInjector.injectProperties(props);
 		assertEquals(expected, stringValue);
 	}
 
@@ -58,7 +58,7 @@ public class PropertyInjectorTest {
 		String expectedHex = "#FFCC00";
 		Color expected = Color.decode(expectedHex);
 		props.put(PropertyInjectorTest.class.getName() + ".colorValue", expectedHex);
-		PropertyInjector.injectPropreties(props);
+		PropertyInjector.injectProperties(props);
 		assertEquals(expected, colorValue);
 	}
 }

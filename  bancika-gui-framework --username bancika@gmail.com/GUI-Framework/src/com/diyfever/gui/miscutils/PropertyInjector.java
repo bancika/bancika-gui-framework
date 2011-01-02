@@ -2,8 +2,8 @@ package com.diyfever.gui.miscutils;
 
 import java.awt.Color;
 import java.lang.reflect.Field;
-import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
  * com.bancika.ClassA.INT_COST=15
  * com.bancika.ClassB.STR_CONST=Test
  * </code> <br>
- * After {@link #injectPropreties(Properties)} is executed, static field
+ * After {@link #injectProperties(Properties)} is executed, static field
  * INT_COST in the com.bancika.ClassA class will be populated with int value of
  * 15. Similar for the other property line.<br>
  * Currently it supports Boolean, Integer, Double and Color together with their
@@ -29,13 +29,18 @@ public class PropertyInjector {
 	private PropertyInjector() {
 	}
 
-	public static void injectPropreties(Properties properties) {
+	/**
+	 * Injects properties from the provided {@link Properties} object.
+	 * 
+	 * @param properties
+	 */
+	public static void injectProperties(Properties properties) {
 		for (Entry<Object, Object> entry : properties.entrySet()) {
 			String key = entry.getKey().toString();
 			String value = entry.getValue().toString();
-			String className = key.substring(0, key.lastIndexOf('.'));
-			String fieldName = key.substring(key.lastIndexOf('.') + 1);
 			try {
+				String className = key.substring(0, key.lastIndexOf('.'));
+				String fieldName = key.substring(key.lastIndexOf('.') + 1);
 				Class<?> clazz = Class.forName(className);
 				try {
 					Field field = clazz.getField(fieldName);
@@ -64,16 +69,18 @@ public class PropertyInjector {
 						field.set(null, color);
 					}
 				} catch (SecurityException e) {
-					LOG.warn("Could not inject " + key + ". Field access denied.");
+					LOG.warn("Could not inject " + key + ". Field access denied: " + fieldName);
 				} catch (NoSuchFieldException e) {
-					LOG.warn("Could not inject " + key + ". Field not found.");
+					LOG.warn("Could not inject " + key + ". Field not found: " + fieldName);
 				} catch (IllegalArgumentException e) {
-					LOG.warn("Could not inject " + key + ". Illegal aaccess.");
+					LOG.warn("Could not inject " + key + ". Illegal access: " + fieldName);
 				} catch (IllegalAccessException e) {
-					LOG.warn("Could not inject " + key + ". Field illegal access.");
+					LOG.warn("Could not inject " + key + ". Field illegal access: " + fieldName);
 				}
+			} catch (StringIndexOutOfBoundsException e) {
+				LOG.warn("Property name does not match format ClassName.FIELD_NAME: " + key);
 			} catch (ClassNotFoundException e) {
-				LOG.warn("Could not inject " + key + ". Class not found.");
+				LOG.warn("Could not inject " + key + ". Class not found: " + key);
 			}
 		}
 	}
