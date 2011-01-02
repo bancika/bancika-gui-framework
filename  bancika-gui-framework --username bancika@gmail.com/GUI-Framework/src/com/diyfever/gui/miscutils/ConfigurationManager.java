@@ -13,8 +13,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class ConfigurationManager {
 
-	private static final Logger LOG = Logger
-			.getLogger(ConfigurationManager.class);
+	private static final Logger LOG = Logger.getLogger(ConfigurationManager.class);
 
 	private static ConfigurationManager instance;
 

@@ -12,6 +12,11 @@ import java.util.jar.JarInputStream;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Utility class that provides JAR manipulation methods.
+ * 
+ * @author Branislav Stojkovic
+ */
 public class JarScanner {
 
 	private static final Logger LOG = Logger.getLogger(JarScanner.class);
