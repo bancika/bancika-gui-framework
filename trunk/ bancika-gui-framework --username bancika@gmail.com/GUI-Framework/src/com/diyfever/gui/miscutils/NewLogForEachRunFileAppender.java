@@ -16,19 +16,17 @@ public class NewLogForEachRunFileAppender extends FileAppender {
 	public NewLogForEachRunFileAppender() {
 	}
 
-	public NewLogForEachRunFileAppender(Layout layout, String filename,
-			boolean append, boolean bufferedIO, int bufferSize)
-			throws IOException {
+	public NewLogForEachRunFileAppender(Layout layout, String filename, boolean append,
+			boolean bufferedIO, int bufferSize) throws IOException {
 		super(layout, filename, append, bufferedIO, bufferSize);
 	}
 
-	public NewLogForEachRunFileAppender(Layout layout, String filename,
-			boolean append) throws IOException {
+	public NewLogForEachRunFileAppender(Layout layout, String filename, boolean append)
+			throws IOException {
 		super(layout, filename, append);
 	}
 
-	public NewLogForEachRunFileAppender(Layout layout, String filename)
-			throws IOException {
+	public NewLogForEachRunFileAppender(Layout layout, String filename) throws IOException {
 		super(layout, filename);
 	}
 
@@ -57,8 +55,7 @@ public class NewLogForEachRunFileAppender extends FileAppender {
 			if (dotIndex != -1) {
 				// the file name has an extension. so, insert the time stamp
 				// between the file name and the extension
-				newFileName = fileName.substring(0, dotIndex) + HIPHEN
-						+ new java.util.Date() + DOT
+				newFileName = fileName.substring(0, dotIndex) + HIPHEN + new java.util.Date() + DOT
 						+ fileName.substring(dotIndex + 1);
 			} else {
 				// the file name has no extension. So, just append the timestamp

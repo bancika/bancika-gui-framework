@@ -68,18 +68,15 @@ public class ObjectListTable<T> extends AutoFitTable {
 	 */
 	@SuppressWarnings("unchecked")
 	public ObjectListTable(Class<? extends T> dataClass, String[] fields,
-			IActionProcessor<T> clickListener) throws SecurityException,
-			NoSuchMethodException {
+			IActionProcessor<T> clickListener) throws SecurityException, NoSuchMethodException {
 		super(new ObjectListTableModel<T>(dataClass, fields));
 		this.clickListener = clickListener;
 
-		for (Integer idx : ((ObjectListTableModel<T>) getModel())
-				.getActionColumns()) {
+		for (Integer idx : ((ObjectListTableModel<T>) getModel()).getActionColumns()) {
 			getColumnModel().getColumn(idx).setCellRenderer(
-					new ActionTableCellRenderer(this.clickListener
-							.getActionIcon(getModel().getColumnName(idx)),
-							this.clickListener.getActionLabel(getModel()
-									.getColumnName(idx))));
+					new ActionTableCellRenderer(this.clickListener.getActionIcon(getModel()
+							.getColumnName(idx)), this.clickListener.getActionLabel(getModel()
+							.getColumnName(idx))));
 
 		}
 
@@ -88,13 +85,11 @@ public class ObjectListTable<T> extends AutoFitTable {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int columnIndex = columnAtPoint(e.getPoint());
-				if (((ObjectListTableModel) getModel()).getActionColumns()
-						.contains(columnIndex)) {
+				if (((ObjectListTableModel) getModel()).getActionColumns().contains(columnIndex)) {
 					int rowIndex = rowAtPoint(e.getPoint());
-					Object value = ((ObjectListTableModel) getModel())
-							.getData().get(rowIndex);
-					ObjectListTable.this.clickListener.actionExecuted(
-							(T) value, getModel().getColumnName(columnIndex));
+					Object value = ((ObjectListTableModel) getModel()).getData().get(rowIndex);
+					ObjectListTable.this.clickListener.actionExecuted((T) value, getModel()
+							.getColumnName(columnIndex));
 				}
 			}
 
@@ -104,8 +99,7 @@ public class ObjectListTable<T> extends AutoFitTable {
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				int columnIndex = columnAtPoint(e.getPoint());
-				if (((ObjectListTableModel) getModel()).getActionColumns()
-						.contains(columnIndex)) {
+				if (((ObjectListTableModel) getModel()).getActionColumns().contains(columnIndex)) {
 					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 				} else {
 					setCursor(Cursor.getDefaultCursor());
@@ -160,21 +154,15 @@ public class ObjectListTable<T> extends AutoFitTable {
 	 * Shades alternate rows in different colors.
 	 */
 	@SuppressWarnings("unchecked")
-	public Component prepareRenderer(TableCellRenderer renderer, int row,
-			int column) {
+	public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
 		Component c = super.prepareRenderer(renderer, row, column);
-		if (!((ObjectListTableModel<T>) getModel()).getActionColumns()
-				.contains(column)) {
+		if (!((ObjectListTableModel<T>) getModel()).getActionColumns().contains(column)) {
 			if (isCellSelected(row, column) == false) {
 				c.setBackground(colorForRow(row));
 				c.setForeground(UIManager.getColor("Table.foreground"));
 			} else {
-				c
-						.setBackground(UIManager
-								.getColor("Table.selectionBackground"));
-				c
-						.setForeground(UIManager
-								.getColor("Table.selectionForeground"));
+				c.setBackground(UIManager.getColor("Table.selectionBackground"));
+				c.setForeground(UIManager.getColor("Table.selectionForeground"));
 			}
 		}
 		return c;

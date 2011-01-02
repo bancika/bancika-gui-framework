@@ -38,9 +38,8 @@ public class AboutDialog extends JDialog {
 	private final String mail;
 	private final String htmlContent;
 
-	public AboutDialog(JFrame parent, String appName, Icon icon,
-			String version, String author, String url, String mail,
-			String htmlContent) {
+	public AboutDialog(JFrame parent, String appName, Icon icon, String version, String author,
+			String url, String mail, String htmlContent) {
 		super(parent, "About");
 		this.appName = appName;
 		this.icon = icon;
@@ -66,8 +65,7 @@ public class AboutDialog extends JDialog {
 		if (mainPanel == null) {
 			mainPanel = new JPanel(new GridBagLayout());
 			mainPanel.setBackground(Color.white);
-			mainPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0,
-					Color.gray));
+			mainPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.gray));
 
 			GridBagConstraints gbc = new GridBagConstraints();
 			gbc.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -83,8 +81,7 @@ public class AboutDialog extends JDialog {
 
 			JLabel appNameLabel = new JLabel(appName);
 			appNameLabel.setForeground(Color.red.darker());
-			appNameLabel.setFont(appNameLabel.getFont().deriveFont(18f)
-					.deriveFont(Font.BOLD));
+			appNameLabel.setFont(appNameLabel.getFont().deriveFont(18f).deriveFont(Font.BOLD));
 
 			gbc.gridx = 1;
 			gbc.gridy = 0;
@@ -120,18 +117,15 @@ public class AboutDialog extends JDialog {
 			gbc.gridy = 4;
 			mainPanel.add(mailLabel, gbc);
 
-			String html = "<head><title>About</title>"
-					+ "<style type=\"text/css\">"
+			String html = "<head><title>About</title>" + "<style type=\"text/css\">"
 					+ "body {font-family: Tahoma; font-size: 8.5px; } </style></head><body>"
 					+ htmlContent + "</body></html>";
 			JEditorPane editorPane = new JEditorPane("text/html", html);
 			editorPane.setEditable(false);
-			editorPane
-					.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+			editorPane.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 
 			JScrollPane scrollPane = new JScrollPane(editorPane);
-			scrollPane
-					.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPane.setBorder(null);
 
 			gbc.fill = GridBagConstraints.BOTH;

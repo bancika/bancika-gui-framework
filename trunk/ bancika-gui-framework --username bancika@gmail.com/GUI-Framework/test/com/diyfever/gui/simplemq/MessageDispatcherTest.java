@@ -60,8 +60,7 @@ public class MessageDispatcherTest {
 
 		@Override
 		public void processMessage(EventType eventType, Object... params) {
-			System.out.println(Thread.currentThread().getName()
-					+ " - received message in "
+			System.out.println(Thread.currentThread().getName() + " - received message in "
 					+ (System.nanoTime() - startTime) / 1e6 + " ms");
 			this.eventType = eventType;
 			this.params = params;

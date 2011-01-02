@@ -23,14 +23,15 @@ public class ActionTableCellRenderer extends DefaultTableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 			boolean hasFocus, int row, int column) {
-//		JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected,
-//				hasFocus, row, column);
+		// JLabel label = (JLabel) super.getTableCellRendererComponent(table,
+		// value, isSelected,
+		// hasFocus, row, column);
 		JButton button = new JButton(actionText);
 		button.setText(actionText);
 		button.setIcon(icon);
-//		button.setBackground(Color.pink);
-//		button.setOpaque(true);
-//		button.setHorizontalAlignment(SwingConstants.CENTER);
+		// button.setBackground(Color.pink);
+		// button.setOpaque(true);
+		// button.setHorizontalAlignment(SwingConstants.CENTER);
 		return button;
 	}
 }

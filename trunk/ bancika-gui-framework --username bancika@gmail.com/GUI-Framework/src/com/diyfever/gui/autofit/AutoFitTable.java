@@ -32,8 +32,7 @@ public class AutoFitTable extends JTable {
 		super(rowData, columnNames);
 	}
 
-	public AutoFitTable(TableModel dm, TableColumnModel cm,
-			ListSelectionModel sm) {
+	public AutoFitTable(TableModel dm, TableColumnModel cm, ListSelectionModel sm) {
 		super(dm, cm, sm);
 	}
 
@@ -63,16 +62,13 @@ public class AutoFitTable extends JTable {
 				Object value = getValueAt(j, i);
 				TableCellRenderer renderer = getCellRenderer(j, i);
 				if (renderer != null) {
-					Component rendererComponent = renderer
-							.getTableCellRendererComponent(this, value, false,
-									false, rowIdx, columnIdx);
+					Component rendererComponent = renderer.getTableCellRendererComponent(this,
+							value, false, false, rowIdx, columnIdx);
 					try {
-						Method getText = rendererComponent.getClass()
-								.getMethod("getText");
-						String text = (String) getText
-								.invoke(rendererComponent);
-						int cellWidth = getGraphics().getFontMetrics(
-								rendererComponent.getFont()).stringWidth(text) + 12;
+						Method getText = rendererComponent.getClass().getMethod("getText");
+						String text = (String) getText.invoke(rendererComponent);
+						int cellWidth = getGraphics().getFontMetrics(rendererComponent.getFont())
+								.stringWidth(text) + 12;
 						if (cellWidth > width) {
 							width = cellWidth;
 						}

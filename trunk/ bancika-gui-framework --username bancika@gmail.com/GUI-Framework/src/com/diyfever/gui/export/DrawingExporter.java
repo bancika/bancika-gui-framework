@@ -60,8 +60,8 @@ public class DrawingExporter {
 		printJob.setPrintable(new Printable() {
 
 			@Override
-			public int print(Graphics graphics, PageFormat pageFormat,
-					int pageIndex) throws PrinterException {
+			public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
+					throws PrinterException {
 				if (pageIndex > 0) {
 					return (NO_SUCH_PAGE);
 				} else {
@@ -69,23 +69,20 @@ public class DrawingExporter {
 
 					Dimension d = plugInPort.getSize();
 
-					double pageRatio = pageFormat.getWidth()
-							/ pageFormat.getHeight();
+					double pageRatio = pageFormat.getWidth() / pageFormat.getHeight();
 					double imageRatio = d.getWidth() / d.getHeight();
 					double scale;
 					if (imageRatio > pageRatio) {
-						scale = (pageFormat.getWidth() - 2 * margin)
-								/ d.getWidth();
+						scale = (pageFormat.getWidth() - 2 * margin) / d.getWidth();
 					} else {
-						scale = (pageFormat.getHeight() - 2 * margin)
-								/ d.getHeight();
+						scale = (pageFormat.getHeight() - 2 * margin) / d.getHeight();
 					}
 					if (scale > 1) {
 						scale = 1d;
 					}
 
-					g2d.translate(pageFormat.getImageableX() + margin,
-							pageFormat.getImageableY() + margin);
+					g2d.translate(pageFormat.getImageableX() + margin, pageFormat.getImageableY()
+							+ margin);
 
 					g2d.setFont(new Font("Tahoma", Font.PLAIN, 6));
 					FontMetrics metrics = g2d.getFontMetrics();
@@ -147,8 +144,8 @@ public class DrawingExporter {
 
 					if (scale < 1) {
 						String warningStr = "Note: image has been scaled down to fit the page.";
-						g2d.drawString(warningStr, 0, (int) (d.getHeight()
-								* scale + metrics.getHeight()));
+						g2d.drawString(warningStr, 0, (int) (d.getHeight() * scale + metrics
+								.getHeight()));
 					}
 
 					g2d.scale(scale, scale);
@@ -179,16 +176,14 @@ public class DrawingExporter {
 			Dimension d = plugInPort.getSize();
 			float totalWidth = (float) (2 * margin + d.getWidth());
 			float totalHeight = (float) (2 * margin + d.getHeight());
-			Document document = new Document(new com.lowagie.text.Rectangle(
-					totalWidth, totalHeight));
-			PdfWriter writer = PdfWriter.getInstance(document,
-					new FileOutputStream(file));
+			Document document = new Document(
+					new com.lowagie.text.Rectangle(totalWidth, totalHeight));
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
 			document.open();
 			PdfContentByte contentByte = writer.getDirectContent();
-			PdfTemplate template = contentByte.createTemplate(totalWidth,
-					totalHeight);
-			Graphics2D g2d = template.createGraphics((float) d.getWidth(),
-					(float) d.getHeight(), new DefaultFontMapper());
+			PdfTemplate template = contentByte.createTemplate(totalWidth, totalHeight);
+			Graphics2D g2d = template.createGraphics((float) d.getWidth(), (float) d.getHeight(),
+					new DefaultFontMapper());
 
 			plugInPort.draw(g2d);
 
@@ -209,8 +204,8 @@ public class DrawingExporter {
 	public void exportPNG(IDrawingProvider plugInPort, File file) {
 		try {
 			Dimension d = plugInPort.getSize();
-			BufferedImage image = new BufferedImage((int) d.getWidth(), (int) d
-					.getHeight(), BufferedImage.TYPE_INT_RGB);
+			BufferedImage image = new BufferedImage((int) d.getWidth(), (int) d.getHeight(),
+					BufferedImage.TYPE_INT_RGB);
 			Graphics2D g2d = (Graphics2D) image.getGraphics();
 
 			plugInPort.draw(g2d);

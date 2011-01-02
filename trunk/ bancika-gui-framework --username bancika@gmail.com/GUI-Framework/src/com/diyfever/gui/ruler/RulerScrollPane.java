@@ -71,8 +71,7 @@ public class RulerScrollPane extends JScrollPane {
 
 			@Override
 			public void componentResized(ComponentEvent e) {
-				updateRulerSize(e.getComponent().getWidth(), e.getComponent()
-						.getHeight());
+				updateRulerSize(e.getComponent().getWidth(), e.getComponent().getHeight());
 			}
 		});
 		updateRulerSize(view.getWidth(), view.getHeight());
@@ -102,10 +101,8 @@ public class RulerScrollPane extends JScrollPane {
 			}
 		});
 
-		setCorner(ScrollPaneConstants.UPPER_RIGHT_CORNER, new Corner(
-				Ruler.HORIZONTAL));
-		setCorner(ScrollPaneConstants.LOWER_LEFT_CORNER, new Corner(
-				Ruler.VERTICAL));
+		setCorner(ScrollPaneConstants.UPPER_RIGHT_CORNER, new Corner(Ruler.HORIZONTAL));
+		setCorner(ScrollPaneConstants.LOWER_LEFT_CORNER, new Corner(Ruler.VERTICAL));
 
 		navigateButton = new JButton(IconLoader.MoveSmall.getIcon());
 		navigateButton.setToolTipText("Auto-scroll");
@@ -115,8 +112,7 @@ public class RulerScrollPane extends JScrollPane {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				NavigateDialog navigateDialog = new NavigateDialog(
-						RulerScrollPane.this, provider);
+				NavigateDialog navigateDialog = new NavigateDialog(RulerScrollPane.this, provider);
 				navigateDialog.setVisible(true);
 				navigateDialog.setLocationRelativeTo(navigateButton);
 			}
@@ -129,12 +125,9 @@ public class RulerScrollPane extends JScrollPane {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals("dragPoint")) {
-					horizontalRuler
-							.setIndicatorValue(((Long) evt.getOldValue())
-									.intValue());
+					horizontalRuler.setIndicatorValue(((Long) evt.getOldValue()).intValue());
 					horizontalRuler.repaint();
-					verticalRuler.setIndicatorValue(((Long) evt.getNewValue())
-							.intValue());
+					verticalRuler.setIndicatorValue(((Long) evt.getNewValue()).intValue());
 					verticalRuler.repaint();
 				}
 			}

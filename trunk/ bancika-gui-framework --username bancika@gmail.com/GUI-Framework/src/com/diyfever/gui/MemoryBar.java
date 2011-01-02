@@ -32,8 +32,7 @@ public class MemoryBar extends JComponent {
 	private static final Format format = new DecimalFormat("0.00");
 	private static final String logPattern = "%s MB of %s MB free, max %s MB is available";
 	private static final String tooltipPattern = "<html>%s MB of %s MB free<br>"
-			+ "Max %s MB is available<br>"
-			+ "Click to run the garbage collector</html>";
+			+ "Max %s MB is available<br>" + "Click to run the garbage collector</html>";
 
 	private Thread bgThread;
 
@@ -61,10 +60,9 @@ public class MemoryBar extends JComponent {
 							.format(convertToMb(freeMemory)), format
 							.format(convertToMb(totalMemory)), format
 							.format(convertToMb(maxMemory))));
-					LOG.debug(String.format(logPattern, format
-							.format(convertToMb(freeMemory)), format
-							.format(convertToMb(totalMemory)), format
-							.format(convertToMb(maxMemory))));
+					LOG.debug(String.format(logPattern, format.format(convertToMb(freeMemory)),
+							format.format(convertToMb(totalMemory)), format
+									.format(convertToMb(maxMemory))));
 					repaint();
 					try {
 						Thread.sleep(DELAY);

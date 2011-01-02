@@ -46,8 +46,7 @@ public class JarScanner {
 
 		LOG.debug("Scanning " + jar.getName());
 		try {
-			JarInputStream jarFile = new JarInputStream(
-					new FileInputStream(jar));
+			JarInputStream jarFile = new JarInputStream(new FileInputStream(jar));
 			JarEntry jarEntry;
 
 			while (true) {
@@ -56,10 +55,8 @@ public class JarScanner {
 					break;
 				}
 				if (jarEntry.getName().endsWith(".class")) {
-					String className = jarEntry.getName()
-							.replaceAll("/", "\\.");
-					className = className.substring(0, className
-							.lastIndexOf('.'));
+					String className = jarEntry.getName().replaceAll("/", "\\.");
+					className = className.substring(0, className.lastIndexOf('.'));
 					if (!className.contains("$")) {
 						LOG.trace("Found " + className);
 						classes.add(className);
@@ -119,8 +116,7 @@ public class JarScanner {
 						Class<?> clazz;
 						try {
 							clazz = Class.forName(className);
-							if (baseInterface.isAssignableFrom(clazz)
-									&& !clazz.isInterface()) {
+							if (baseInterface.isAssignableFrom(clazz) && !clazz.isInterface()) {
 								LOG.debug("Loaded class: " + className);
 								classes.add(clazz);
 							}

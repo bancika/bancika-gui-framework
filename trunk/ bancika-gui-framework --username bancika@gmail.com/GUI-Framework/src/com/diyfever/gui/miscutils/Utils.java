@@ -53,8 +53,7 @@ public class Utils {
 						p = Runtime.getRuntime().exec(cmd);
 					}
 				} catch (InterruptedException x) {
-					System.err.println("Error bringing up browser, cmd='" + cmd
-							+ "'");
+					System.err.println("Error bringing up browser, cmd='" + cmd + "'");
 					System.err.println("Caught: " + x);
 				}
 			}
@@ -77,8 +76,7 @@ public class Utils {
 		}
 
 		// Walk up the superclass hierarchy
-		for (Class<?> obj = o.getClass(); !obj.equals(Object.class); obj = obj
-				.getSuperclass()) {
+		for (Class<?> obj = o.getClass(); !obj.equals(Object.class); obj = obj.getSuperclass()) {
 			Field[] fields = obj.getDeclaredFields();
 			for (int i = 0; i < fields.length; i++) {
 				fields[i].setAccessible(true);

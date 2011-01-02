@@ -29,8 +29,7 @@ class UpdateDialog extends JDialog {
 	private String htmlText;
 	private String latestVersionUrl;
 
-	public UpdateDialog(JComponent owner, String htmlText,
-			String latestVersionUrl) {
+	public UpdateDialog(JComponent owner, String htmlText, String latestVersionUrl) {
 		super(SwingUtilities.getWindowAncestor(owner));
 		this.htmlText = htmlText;
 		this.latestVersionUrl = latestVersionUrl;
@@ -42,13 +41,11 @@ class UpdateDialog extends JDialog {
 		holderPanel.setLayout(new BorderLayout());
 		holderPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
-		holderPanel.add(new JLabel(
-				"These updates are available for your computer:"),
+		holderPanel.add(new JLabel("These updates are available for your computer:"),
 				BorderLayout.NORTH);
 
 		JScrollPane scrollPane = new JScrollPane(getHtmlLabel());
-		scrollPane
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		holderPanel.add(scrollPane, BorderLayout.CENTER);
 		holderPanel.add(createButtonPanel(), BorderLayout.SOUTH);
 

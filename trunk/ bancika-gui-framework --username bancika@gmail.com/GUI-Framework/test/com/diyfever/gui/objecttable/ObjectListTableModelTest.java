@@ -16,8 +16,8 @@ public class ObjectListTableModelTest {
 
 	@Before
 	public void setUp() throws Exception {
-		model = new ObjectListTableModel<Point>(Point.class, new String[] {
-				"getX/setX", "getY", "action:Delete" });
+		model = new ObjectListTableModel<Point>(Point.class, new String[] { "getX/setX", "getY",
+				"action:Delete" });
 		model.setData(Arrays.asList(new Point(10, 20), new Point(5, 2)));
 	}
 

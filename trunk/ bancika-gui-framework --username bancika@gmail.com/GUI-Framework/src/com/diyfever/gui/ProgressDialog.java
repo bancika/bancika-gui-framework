@@ -20,8 +20,8 @@ public class ProgressDialog extends ButtonDialog {
 	private JPanel mainPanel;
 	private JProgressBar progressBar;
 
-	public ProgressDialog(JFrame owner, String title, String[] buttonCaptions,
-			String description, boolean useProgress) {
+	public ProgressDialog(JFrame owner, String title, String[] buttonCaptions, String description,
+			boolean useProgress) {
 		super(owner, title, buttonCaptions);
 		this.description = description;
 		this.useProgress = useProgress;

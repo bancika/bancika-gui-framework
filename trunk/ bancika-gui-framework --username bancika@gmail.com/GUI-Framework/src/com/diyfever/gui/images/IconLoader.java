@@ -10,14 +10,8 @@ import javax.swing.ImageIcon;
  */
 public enum IconLoader {
 
-	Error("error.png"),
-	Warning("warning.png"),
-	LightBulbOn("lightbulb_on.png"),
-	LightBulbOff("lightbulb_off.png"),
-	MoveSmall("move_small.png"),
-	Undo("undo.png"),
-	Redo("redo.png"),
-	;
+	Error("error.png"), Warning("warning.png"), LightBulbOn("lightbulb_on.png"), LightBulbOff(
+			"lightbulb_off.png"), MoveSmall("move_small.png"), Undo("undo.png"), Redo("redo.png"), ;
 
 	protected String name;
 

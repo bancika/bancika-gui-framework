@@ -22,8 +22,7 @@ import org.apache.log4j.Logger;
  */
 public class ObjectListTableModel<T> extends AbstractTableModel {
 
-	private static final Logger LOG = Logger
-			.getLogger(ObjectListTableModel.class);
+	private static final Logger LOG = Logger.getLogger(ObjectListTableModel.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -76,8 +75,7 @@ public class ObjectListTableModel<T> extends AbstractTableModel {
 				if (field.contains("/")) {
 					String[] parts = field.split("/");
 					getter = dataClass.getMethod(parts[0]);
-					setter = dataClass.getMethod(parts[1], getter
-							.getReturnType());
+					setter = dataClass.getMethod(parts[1], getter.getReturnType());
 				} else {
 					getter = dataClass.getMethod(field);
 					setter = null;

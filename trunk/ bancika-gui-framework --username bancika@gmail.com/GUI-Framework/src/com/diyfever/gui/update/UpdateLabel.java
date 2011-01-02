@@ -17,8 +17,7 @@ public class UpdateLabel extends JLabel {
 	private UpdateChecker updateChecker;
 	private List<Version> updatedVersions;
 
-	public UpdateLabel(final VersionNumber currentVersion,
-			final String updateFileUrl) {
+	public UpdateLabel(final VersionNumber currentVersion, final String updateFileUrl) {
 		super();
 		updateChecker = new UpdateChecker(currentVersion, updateFileUrl);
 
@@ -28,8 +27,8 @@ public class UpdateLabel extends JLabel {
 			public void mouseClicked(MouseEvent e) {
 				if ((updatedVersions != null) && (updatedVersions.size() > 0)) {
 					new UpdateDialog(UpdateLabel.this, updateChecker
-							.createUpdateHTML(updatedVersions), updatedVersions
-							.get(0).getUrl()).setVisible(true);
+							.createUpdateHTML(updatedVersions), updatedVersions.get(0).getUrl())
+							.setVisible(true);
 				} else {
 					checkForUpdates();
 				}
@@ -59,8 +58,7 @@ public class UpdateLabel extends JLabel {
 					}
 				} catch (Exception e) {
 					setIcon(IconLoader.LightBulbOff.getIcon());
-					setToolTipText("Error occured while searching for updates: "
-							+ e.getMessage());
+					setToolTipText("Error occured while searching for updates: " + e.getMessage());
 					setCursor(Cursor.getDefaultCursor());
 				}
 			}

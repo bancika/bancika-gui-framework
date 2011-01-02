@@ -26,8 +26,7 @@ public class Ruler extends JComponent {
 
 	public static final Color COLOR = Color.decode("#C0FF3E");
 
-	public static final int PIXELS_PER_INCH = Toolkit.getDefaultToolkit()
-			.getScreenResolution();
+	public static final int PIXELS_PER_INCH = Toolkit.getDefaultToolkit().getScreenResolution();
 	public static final int HORIZONTAL = 0;
 	public static final int VERTICAL = 1;
 	public static final int SIZE = 18;
@@ -53,8 +52,8 @@ public class Ruler extends JComponent {
 
 			@Override
 			public void componentResized(ComponentEvent e) {
-				bufferImage = new BufferedImage(e.getComponent().getWidth(), e
-						.getComponent().getHeight(), BufferedImage.TYPE_INT_RGB);
+				bufferImage = new BufferedImage(e.getComponent().getWidth(), e.getComponent()
+						.getHeight(), BufferedImage.TYPE_INT_RGB);
 				bufferGraphics = bufferImage.getGraphics();
 			}
 		});
@@ -117,8 +116,7 @@ public class Ruler extends JComponent {
 		Rectangle drawHere = g.getClipBounds();
 
 		bufferGraphics.setColor(COLOR);
-		bufferGraphics.fillRect(drawHere.x, drawHere.y, drawHere.width,
-				drawHere.height);
+		bufferGraphics.fillRect(drawHere.x, drawHere.y, drawHere.width, drawHere.height);
 
 		// Do the ruler labels in a small font that's black.
 		bufferGraphics.setFont(new Font("SansSerif", Font.PLAIN, 10));
@@ -147,8 +145,7 @@ public class Ruler extends JComponent {
 		for (int i = 0; i <= count; i++) {
 			if ((ticksPerUnit <= 1) || (i % Math.round(ticksPerUnit) == 0)) {
 				tickLength = 10;
-				text = Integer.toString(firstUnit
-						+ Math.round(i / ticksPerUnit));
+				text = Integer.toString(firstUnit + Math.round(i / ticksPerUnit));
 			} else {
 				tickLength = 7 - 2 * (i % Math.round(ticksPerUnit) % 2);
 				text = null;
@@ -158,20 +155,17 @@ public class Ruler extends JComponent {
 
 			if (tickLength != 0) {
 				if (orientation == HORIZONTAL) {
-					bufferGraphics.drawLine(x, SIZE - 1, x, SIZE - tickLength
-							- 1);
+					bufferGraphics.drawLine(x, SIZE - 1, x, SIZE - tickLength - 1);
 					if (text != null) {
 						bufferGraphics.drawString(text, x + 2, 15);
 					}
 				} else {
-					bufferGraphics.drawLine(SIZE - 1, x, SIZE - tickLength - 1,
-							x);
+					bufferGraphics.drawLine(SIZE - 1, x, SIZE - tickLength - 1, x);
 					if (text != null) {
 						FontMetrics fm = bufferGraphics.getFontMetrics();
 						bufferGraphics.drawString(text, SIZE
-								- (int) fm
-										.getStringBounds(text, bufferGraphics)
-										.getWidth() - 2, x + 10);
+								- (int) fm.getStringBounds(text, bufferGraphics).getWidth() - 2,
+								x + 10);
 					}
 				}
 			}
@@ -182,13 +176,11 @@ public class Ruler extends JComponent {
 			bufferGraphics.setColor(Color.red);
 			if (orientation == HORIZONTAL) {
 				if (indicatorValue < getWidth()) {
-					bufferGraphics.drawLine(indicatorValue, 0, indicatorValue,
-							SIZE - 1);
+					bufferGraphics.drawLine(indicatorValue, 0, indicatorValue, SIZE - 1);
 				}
 			} else {
 				if (indicatorValue < getHeight()) {
-					bufferGraphics.drawLine(0, indicatorValue, SIZE - 1,
-							indicatorValue);
+					bufferGraphics.drawLine(0, indicatorValue, SIZE - 1, indicatorValue);
 				}
 			}
 		}
