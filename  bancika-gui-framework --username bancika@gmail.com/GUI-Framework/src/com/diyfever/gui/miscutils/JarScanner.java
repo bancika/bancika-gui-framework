@@ -23,8 +23,6 @@ public class JarScanner {
 
 	private static JarScanner instance;
 
-	private JarFileLoader jarFileLoader = new JarFileLoader(new URL[] {});
-
 	public static JarScanner getInstance() {
 		if (instance == null) {
 			instance = new JarScanner();
@@ -64,7 +62,7 @@ public class JarScanner {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("Error extracting class names from the jar.", e);
 		}
 		return classes;
 	}
@@ -108,14 +106,17 @@ public class JarScanner {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		for (File jar : jars) {
 			List<String> classNames = extractClassNames(jar);
-			try {
-				jarFileLoader.addFile(jar.getAbsolutePath());
-				if (!classNames.isEmpty()) {
-
+			if (!classNames.isEmpty()) {
+				String filePath = jar.getAbsolutePath();
+				try {
+					ClassLoaderUtil.addFile(filePath);
+					filePath = "jar:file://" + filePath + "!/";
+					URL url = new File(filePath).toURI().toURL();
+					URLClassLoader clazzLoader = new URLClassLoader(new URL[] { url });
 					for (String className : classNames) {
 						Class<?> clazz;
 						try {
-							clazz = Class.forName(className);
+							clazz = clazzLoader.loadClass(className);
 							if (baseInterface.isAssignableFrom(clazz) && !clazz.isInterface()) {
 								LOG.debug("Loaded class: " + className);
 								classes.add(clazz);
@@ -126,24 +127,11 @@ public class JarScanner {
 							LOG.warn("Could not load: " + className);
 						}
 					}
+				} catch (Exception e) {
+					LOG.warn("Could not add JAR to the classpath.", e);
 				}
-			} catch (MalformedURLException e) {
-				LOG.error("Could not load JAR. " + e.getMessage());
 			}
 		}
 		return classes;
-	}
-
-	class JarFileLoader extends URLClassLoader {
-
-		public JarFileLoader(URL[] urls) {
-			super(urls);
-		}
-
-		public void addFile(String path) throws MalformedURLException {
-			LOG.info("Trying to load: " + path);
-			String urlPath = "jar:file://" + path + "!/";
-			addURL(new URL(urlPath));
-		}
 	}
 }
