@@ -43,9 +43,18 @@ public class Ruler extends JComponent {
 
 	private double zoomLevel = 1d;
 
+	private int cmSpacing;
+	private int inSpacing;
+
 	public Ruler(int orientation, boolean isMetric) {
+		this(orientation, isMetric, 0, 0);
+	}
+
+	public Ruler(int orientation, boolean isMetric, int cmSpacing, int inSpacing) {
 		this.orientation = orientation;
 		this.isMetric = isMetric;
+		this.cmSpacing = cmSpacing;
+		this.inSpacing = inSpacing;
 		setIncrementAndUnits();
 
 		addComponentListener(new ComponentAdapter() {
@@ -84,9 +93,10 @@ public class Ruler extends JComponent {
 
 	private void setIncrementAndUnits() {
 		if (isMetric) {
-			unitSize = (float) PIXELS_PER_INCH / 2.54f * (float) zoomLevel;
+			unitSize = cmSpacing == 0 ? ((float) PIXELS_PER_INCH / 2.54f * (float) zoomLevel)
+					: cmSpacing;
 		} else {
-			unitSize = (float) (PIXELS_PER_INCH * zoomLevel);
+			unitSize = inSpacing == 0 ? ((float) (PIXELS_PER_INCH * zoomLevel)) : inSpacing;
 		}
 		ticksPerUnit = 1;
 		while (unitSize / ticksPerUnit > 48) {
