@@ -93,10 +93,9 @@ public class Ruler extends JComponent {
 
 	private void setIncrementAndUnits() {
 		if (isMetric) {
-			unitSize = cmSpacing == 0 ? ((float) PIXELS_PER_INCH / 2.54f * (float) zoomLevel)
-					: cmSpacing;
+			unitSize = (float) ((cmSpacing == 0 ? (float) PIXELS_PER_INCH / 2.54f : cmSpacing) * zoomLevel);
 		} else {
-			unitSize = inSpacing == 0 ? ((float) (PIXELS_PER_INCH * zoomLevel)) : inSpacing;
+			unitSize = (float) ((inSpacing == 0 ? (float) (PIXELS_PER_INCH) : inSpacing) * zoomLevel);
 		}
 		ticksPerUnit = 1;
 		while (unitSize / ticksPerUnit > 48) {
