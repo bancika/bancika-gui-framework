@@ -22,14 +22,11 @@ public class DoubleTextField extends JTextField {
 
 	private static final long serialVersionUID = 1L;
 
-	private Double value;
-	private static final JLabel errorLabel = new JLabel(IconLoader.Warning.getIcon());
-	static {
-		errorLabel.setBorder(BorderFactory.createEmptyBorder(3, 0, 0, 0));
-	}
 	private static final Format format = new DecimalFormat();
-
 	public static final String VALUE_PROPERTY = "DoubleValue";
+	
+	private Double value;
+	private JLabel errorLabel;
 
 	private boolean ignoreChanges = false;
 
@@ -41,6 +38,8 @@ public class DoubleTextField extends JTextField {
 	public DoubleTextField() {
 		super();
 		setLayout(new BorderLayout());
+		errorLabel = new JLabel(IconLoader.Warning.getIcon());
+		errorLabel.setBorder(BorderFactory.createEmptyBorder(3, 0, 0, 0));
 		add(errorLabel, BorderLayout.EAST);
 		getDocument().addDocumentListener(new DocumentListener() {
 
