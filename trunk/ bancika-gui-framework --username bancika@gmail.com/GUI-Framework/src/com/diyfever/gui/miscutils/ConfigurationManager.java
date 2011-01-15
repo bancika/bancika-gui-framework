@@ -11,6 +11,14 @@ import org.apache.log4j.Logger;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+/**
+ * Utility that reads and writes configuration to an XML file. Each
+ * configuration item should have a unique name. To write to the configuration
+ * use {@link #writeValue(String, Object)}. Use <code>readXYZ</code> methods
+ * where XYZ stands for specific data types.
+ * 
+ * @author Branislav Stojkovic
+ */
 public class ConfigurationManager {
 
 	private static final Logger LOG = Logger.getLogger(ConfigurationManager.class);
