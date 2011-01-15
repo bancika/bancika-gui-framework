@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.List;
 
 public class Utils {
 
@@ -121,5 +122,20 @@ public class Utils {
 		int width = Math.abs(p1.x - p2.x);
 		int height = Math.abs(p1.y - p2.y);
 		return new Rectangle(minX, minY, width, height);
+	}
+	
+	public static String toCommaString(List<?> list) {
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < list.size(); i++) {
+			if (i > 0) {
+				if (i == list.size() - 1) {
+					builder.append(" and ");
+				} else {
+					builder.append(", ");
+				}
+			}
+			builder.append(list.get(i));
+		}
+		return builder.toString();
 	}
 }
