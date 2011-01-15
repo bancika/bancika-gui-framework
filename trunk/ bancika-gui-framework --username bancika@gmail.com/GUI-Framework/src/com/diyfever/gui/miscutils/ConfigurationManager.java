@@ -57,11 +57,55 @@ public class ConfigurationManager {
 		}
 	}
 
-	public Object getConfigurationItem(String key) {
-		return configuration.get(key);
+	public boolean readBoolean(String key, boolean defaultValue) {
+		if (configuration.containsKey(key)) {
+			return (Boolean) configuration.get(key);
+		} else {
+			return defaultValue;
+		}
 	}
 
-	public void setConfigurationItem(String key, Object value) {
+	public String readString(String key, String defaultValue) {
+		if (configuration.containsKey(key)) {
+			return (String) configuration.get(key);
+		} else {
+			return defaultValue;
+		}
+	}
+
+	public int readInt(String key, int defaultValue) {
+		if (configuration.containsKey(key)) {
+			return (Integer) configuration.get(key);
+		} else {
+			return defaultValue;
+		}
+	}
+
+	public float readFloat(String key, float defaultValue) {
+		if (configuration.containsKey(key)) {
+			return (Float) configuration.get(key);
+		} else {
+			return defaultValue;
+		}
+	}
+
+	public double readDouble(String key, double defaultValue) {
+		if (configuration.containsKey(key)) {
+			return (Double) configuration.get(key);
+		} else {
+			return defaultValue;
+		}
+	}
+
+	public Object readObject(String key, Object defaultValue) {
+		if (configuration.containsKey(key)) {
+			return configuration.get(key);
+		} else {
+			return defaultValue;
+		}
+	}
+
+	public void writeValue(String key, Object value) {
 		configuration.put(key, value);
 		saveConfigration();
 	}
