@@ -24,7 +24,7 @@ public class DoubleTextField extends JTextField {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Format format = new DecimalFormat();
+	private static final Format format = new DecimalFormat("0.#####");
 	public static final String VALUE_PROPERTY = "DoubleValue";
 	
 	private Double value;
