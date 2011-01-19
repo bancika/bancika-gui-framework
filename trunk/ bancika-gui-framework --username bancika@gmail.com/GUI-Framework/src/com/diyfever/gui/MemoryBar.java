@@ -28,7 +28,8 @@ public class MemoryBar extends JComponent {
 
 	private static final Logger LOG = Logger.getLogger(MemoryBar.class);
 
-	private static final int DELAY = 5000;
+	private static final int DELAY = 10000;
+	private static final boolean USE_LOG = false;
 	private static final Format format = new DecimalFormat("0.00");
 	private static final String logPattern = "%s MB of %s MB free, max %s MB is available";
 	private static final String tooltipPattern = "<html>%s MB of %s MB free<br>"
@@ -69,9 +70,11 @@ public class MemoryBar extends JComponent {
 							.format(convertToMb(freeMemory)), format
 							.format(convertToMb(totalMemory)), format
 							.format(convertToMb(maxMemory))));
-					LOG.debug(String.format(logPattern, format.format(convertToMb(freeMemory)),
-							format.format(convertToMb(totalMemory)), format
-									.format(convertToMb(maxMemory))));
+					if (USE_LOG) {
+						LOG.debug(String.format(logPattern, format.format(convertToMb(freeMemory)),
+								format.format(convertToMb(totalMemory)), format
+										.format(convertToMb(maxMemory))));
+					}
 					repaint();
 					try {
 						Thread.sleep(DELAY);
