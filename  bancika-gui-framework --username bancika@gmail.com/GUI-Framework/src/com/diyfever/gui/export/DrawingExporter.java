@@ -6,18 +6,21 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 import javax.imageio.ImageIO;
 
 import com.diyfever.gui.IDrawingProvider;
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
@@ -36,7 +39,9 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class DrawingExporter {
 
-	private static final double margin = 28d; // 1cm
+	private static final double margin = 0; // 1cm
+	private static final int PDF_RESOLUTION = 72;
+	private static final int SCREEN_RESOLUTION = Toolkit.getDefaultToolkit().getScreenResolution();
 
 	private static DrawingExporter instance;
 
@@ -54,8 +59,9 @@ public class DrawingExporter {
 	 * Prints the image and scales it down if needed.
 	 * 
 	 * @param plugInPort
+	 * @throws PrinterException
 	 */
-	public void print(final IDrawingProvider plugInPort) {
+	public void print(final IDrawingProvider plugInPort) throws PrinterException {
 		PrinterJob printJob = PrinterJob.getPrinterJob();
 		printJob.setPrintable(new Printable() {
 
@@ -157,11 +163,7 @@ public class DrawingExporter {
 			}
 		});
 		if (printJob.printDialog()) {
-			try {
-				printJob.print();
-			} catch (PrinterException pe) {
-				System.out.println("Error printing: " + pe);
-			}
+			printJob.print();
 		}
 	}
 
@@ -170,29 +172,31 @@ public class DrawingExporter {
 	 * 
 	 * @param plugInPort
 	 * @param file
+	 * @throws DocumentException
+	 * @throws FileNotFoundException
 	 */
-	public void exportPDF(IDrawingProvider plugInPort, File file) {
-		try {
-			Dimension d = plugInPort.getSize();
-			float totalWidth = (float) (2 * margin + d.getWidth());
-			float totalHeight = (float) (2 * margin + d.getHeight());
-			Document document = new Document(
-					new com.lowagie.text.Rectangle(totalWidth, totalHeight));
-			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
-			document.open();
-			PdfContentByte contentByte = writer.getDirectContent();
-			PdfTemplate template = contentByte.createTemplate(totalWidth, totalHeight);
-			Graphics2D g2d = template.createGraphics((float) d.getWidth(), (float) d.getHeight(),
-					new DefaultFontMapper());
+	public void exportPDF(IDrawingProvider plugInPort, File file) throws FileNotFoundException,
+			DocumentException {
+		Dimension d = plugInPort.getSize();
+		// We have to scale everything down because PDF resolution is slightly
+		// lower.
+		float factor = 1f * PDF_RESOLUTION / SCREEN_RESOLUTION;
+		float totalWidth = (float) (factor * (2 * margin + d.getWidth()));
+		float totalHeight = (float) (factor * (2 * margin + d.getHeight()));
+		Document document = new Document(new com.lowagie.text.Rectangle(totalWidth, totalHeight));
+		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
+		document.open();
+		PdfContentByte contentByte = writer.getDirectContent();
+		PdfTemplate template = contentByte.createTemplate(totalWidth, totalHeight);
+		Graphics2D g2d = template.createGraphics((float) (factor * d.getWidth()),
+				(float) (factor * d.getHeight()), new DefaultFontMapper());
+		g2d.scale(factor, factor);
 
-			plugInPort.draw(g2d);
+		plugInPort.draw(g2d);
 
-			g2d.dispose();
-			contentByte.addTemplate(template, (float) margin, (float) margin);
-			document.close();
-		} catch (Exception e) {
-			System.out.println("Error exporting: " + e);
-		}
+		g2d.dispose();
+		contentByte.addTemplate(template, (float) margin, (float) margin);
+		document.close();
 	}
 
 	/**
