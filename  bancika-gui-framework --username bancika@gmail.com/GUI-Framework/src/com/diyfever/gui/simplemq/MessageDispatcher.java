@@ -8,8 +8,10 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.log4j.Logger;
+
 /**
- * Utility for asynchronous message distribution.
+ * Utility for synchronous or asynchronous message distribution.
  * 
  * @author Branislav Stojkovic
  * 
@@ -20,13 +22,19 @@ import java.util.concurrent.Executors;
  */
 public class MessageDispatcher<E extends Enum<E>> {
 
+	private static final Logger LOG = Logger.getLogger(MessageDispatcher.class);
+
 	private Map<IMessageListener<E>, EnumSet<E>> listenerMap;
 	private Object mutex = new Object();
 	private ExecutorService threadFactory;
+	private final boolean synchronous;
 
-	public MessageDispatcher() {
+	public MessageDispatcher(boolean synchronous) {
+		this.synchronous = synchronous;
 		listenerMap = new HashMap<IMessageListener<E>, EnumSet<E>>();
-		threadFactory = Executors.newCachedThreadPool();
+		if (!synchronous) {
+			threadFactory = Executors.newCachedThreadPool();
+		}
 	}
 
 	public void registerListener(IMessageListener<E> listener) {
@@ -50,7 +58,23 @@ public class MessageDispatcher<E extends Enum<E>> {
 	 * @param params
 	 */
 	public void dispatchMessage(E eventType, Object... params) {
-		threadFactory.execute(new EventRunnable(eventType, params));
+		if (synchronous) {
+			List<IMessageListener<E>> listeners = new ArrayList<IMessageListener<E>>();
+			for (Map.Entry<IMessageListener<E>, EnumSet<E>> entry : listenerMap.entrySet()) {
+				if (entry.getValue().contains(eventType)) {
+					listeners.add(entry.getKey());
+				}
+			}
+			for (IMessageListener<E> listener : listeners) {
+				try {
+					listener.processMessage(eventType, params);
+				} catch (Exception e) {
+					LOG.error("Listener threw an exception", e);
+				}
+			}
+		} else {
+			threadFactory.execute(new EventRunnable(eventType, params));
+		}
 	}
 
 	/**
@@ -81,7 +105,11 @@ public class MessageDispatcher<E extends Enum<E>> {
 				}
 			}
 			for (IMessageListener<E> listener : listeners) {
-				listener.processMessage(eventType, params);
+				try {
+					listener.processMessage(eventType, params);
+				} catch (Exception e) {
+					LOG.error("Listener threw an exception", e);
+				}
 			}
 		}
 	}

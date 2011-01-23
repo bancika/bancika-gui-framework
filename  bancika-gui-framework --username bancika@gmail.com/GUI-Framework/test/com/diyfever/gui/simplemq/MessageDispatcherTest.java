@@ -17,7 +17,7 @@ public class MessageDispatcherTest {
 
 	@Before
 	public void setUp() throws Exception {
-		dispatcher = new MessageDispatcher<EventType>();
+		dispatcher = new MessageDispatcher<EventType>(false);
 		listener = new MockMessageListener();
 		dispatcher.registerListener(listener);
 	}
