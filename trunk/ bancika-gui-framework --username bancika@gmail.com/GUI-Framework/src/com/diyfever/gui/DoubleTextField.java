@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.text.DecimalFormat;
 import java.text.Format;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -26,12 +24,13 @@ public class DoubleTextField extends JTextField {
 
 	private static final Format format = new DecimalFormat("0.#####");
 	public static final String VALUE_PROPERTY = "DoubleValue";
-	
+
 	private Double value;
 	private JLabel errorLabel;
-	
-	private static ScriptEngineManager factory = new ScriptEngineManager();
-	private static ScriptEngine engine = factory.getEngineByName("JavaScript");
+
+	// private static ScriptEngineManager factory = new ScriptEngineManager();
+	// private static ScriptEngine engine =
+	// factory.getEngineByName("JavaScript");
 
 	private boolean ignoreChanges = false;
 
@@ -84,7 +83,7 @@ public class DoubleTextField extends JTextField {
 	private void textChanged() {
 		if (!ignoreChanges) {
 			try {
-				Double newValue = (Double) engine.eval(getText());
+				Double newValue = (Double) (getText().trim().isEmpty() ? null : format.parseObject(getText()));
 				firePropertyChange(VALUE_PROPERTY, this.value, newValue);
 				this.value = newValue;
 				errorLabel.setVisible(false);
