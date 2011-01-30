@@ -6,13 +6,11 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 
 public abstract class ButtonDialog extends JDialog {
 
@@ -74,8 +72,10 @@ public abstract class ButtonDialog extends JDialog {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						selectedButtonCaption = command;
-						ButtonDialog.this.setVisible(false);
+						if (validateInput(command)) {
+							selectedButtonCaption = command;
+							ButtonDialog.this.setVisible(false);
+						}
 					}
 				});
 				buttonPanel.add(button);
@@ -86,4 +86,8 @@ public abstract class ButtonDialog extends JDialog {
 	}
 
 	abstract protected JComponent getMainComponent();
+
+	protected boolean validateInput(String button) {
+		return true;
+	}
 }
