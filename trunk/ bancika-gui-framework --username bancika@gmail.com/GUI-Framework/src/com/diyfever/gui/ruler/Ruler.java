@@ -43,14 +43,14 @@ public class Ruler extends JComponent {
 
 	private double zoomLevel = 1d;
 
-	private int cmSpacing;
-	private int inSpacing;
+	private double cmSpacing;
+	private double inSpacing;
 
 	public Ruler(int orientation, boolean isMetric) {
 		this(orientation, isMetric, 0, 0);
 	}
 
-	public Ruler(int orientation, boolean isMetric, int cmSpacing, int inSpacing) {
+	public Ruler(int orientation, boolean isMetric, double cmSpacing, double inSpacing) {
 		this.orientation = orientation;
 		this.isMetric = isMetric;
 		this.cmSpacing = cmSpacing;
@@ -93,9 +93,9 @@ public class Ruler extends JComponent {
 
 	private void setIncrementAndUnits() {
 		if (isMetric) {
-			unitSize = (float) ((cmSpacing == 0 ? (float) PIXELS_PER_INCH / 2.54f : cmSpacing) * zoomLevel);
+			unitSize = (float) ((cmSpacing == 0 ? PIXELS_PER_INCH / 2.54f : cmSpacing) * zoomLevel);
 		} else {
-			unitSize = (float) ((inSpacing == 0 ? (float) (PIXELS_PER_INCH) : inSpacing) * zoomLevel);
+			unitSize = (float) ((inSpacing == 0 ? (PIXELS_PER_INCH) : inSpacing) * zoomLevel);
 		}
 		ticksPerUnit = 1;
 		while (unitSize / ticksPerUnit > 48) {
@@ -122,10 +122,11 @@ public class Ruler extends JComponent {
 		if (bufferGraphics == null) {
 			return;
 		}
-		Rectangle drawHere = g.getClipBounds();
+		Rectangle clipRect = g.getClipBounds();
+		System.err.println(clipRect);
 
 		bufferGraphics.setColor(COLOR);
-		bufferGraphics.fillRect(drawHere.x, drawHere.y, drawHere.width, drawHere.height);
+		bufferGraphics.fillRect(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
 
 		// Do the ruler labels in a small font that's black.
 		bufferGraphics.setFont(new Font("SansSerif", Font.PLAIN, 10));
@@ -141,17 +142,22 @@ public class Ruler extends JComponent {
 		// Use clipping bounds to calculate first and last tick locations.
 		int firstUnit;
 		if (orientation == HORIZONTAL) {
-			firstUnit = Math.round(drawHere.x / unitSize);
-			start = Math.round(drawHere.x / increment) * increment;
-			count = Math.round(drawHere.width / increment);
+			firstUnit = Math.round(clipRect.x / unitSize);
+			start = (int) (clipRect.x / unitSize) * unitSize;
+			count = Math.round(clipRect.width / increment) + 1;
 		} else {
-			firstUnit = Math.round(drawHere.y / unitSize);
-			start = Math.round(drawHere.y / increment) * increment;
-			count = Math.round(drawHere.height / increment);
+			firstUnit = Math.round(clipRect.y / unitSize);
+			start = (int) (clipRect.y / unitSize) * unitSize;
+			count = Math.round(clipRect.height / increment) + 1;
 		}
 
+		System.err.println("inc: " + increment + "; start: " + start);
+
 		// ticks and labels
-		for (int i = 0; i <= count; i++) {
+		int x = 0;
+		int i = 0;
+		while (x < (orientation == HORIZONTAL ? (clipRect.x + clipRect.width)
+				: (clipRect.y + clipRect.height))) {
 			if ((ticksPerUnit <= 1) || (i % Math.round(ticksPerUnit) == 0)) {
 				tickLength = 10;
 				text = Integer.toString(firstUnit + Math.round(i / ticksPerUnit));
@@ -160,7 +166,7 @@ public class Ruler extends JComponent {
 				text = null;
 			}
 
-			int x = (int) (start + i * increment);
+			x = (int) (start + i * increment);
 
 			if (tickLength != 0) {
 				if (orientation == HORIZONTAL) {
@@ -178,6 +184,7 @@ public class Ruler extends JComponent {
 					}
 				}
 			}
+			i++;
 		}
 
 		// highlight value
