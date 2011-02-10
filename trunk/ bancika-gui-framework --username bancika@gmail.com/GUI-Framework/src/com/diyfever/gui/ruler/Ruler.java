@@ -136,7 +136,7 @@ public class Ruler extends JComponent {
 		float start = 0;
 		int tickLength = 0;
 		String text = null;
-		int count;
+//		int count;
 		float increment = unitSize / ticksPerUnit;
 
 		// Use clipping bounds to calculate first and last tick locations.
@@ -144,14 +144,12 @@ public class Ruler extends JComponent {
 		if (orientation == HORIZONTAL) {
 			firstUnit = Math.round(clipRect.x / unitSize);
 			start = (int) (clipRect.x / unitSize) * unitSize;
-			count = Math.round(clipRect.width / increment) + 1;
+//			count = Math.round(clipRect.width / increment) + 1;
 		} else {
 			firstUnit = Math.round(clipRect.y / unitSize);
 			start = (int) (clipRect.y / unitSize) * unitSize;
-			count = Math.round(clipRect.height / increment) + 1;
+//			count = Math.round(clipRect.height / increment) + 1;
 		}
-
-		System.err.println("inc: " + increment + "; start: " + start);
 
 		// ticks and labels
 		int x = 0;
