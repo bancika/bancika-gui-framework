@@ -61,7 +61,7 @@ public class RulerScrollPane extends JScrollPane {
 		this(view, provider, 0, 0);
 	}
 
-	public RulerScrollPane(Component view, final IDrawingProvider provider, int cmSpacing, int inSpacing) {
+	public RulerScrollPane(Component view, final IDrawingProvider provider, double cmSpacing, double inSpacing) {
 		super(view);
 
 		horizontalRuler = new Ruler(Ruler.HORIZONTAL, true, cmSpacing, inSpacing);
