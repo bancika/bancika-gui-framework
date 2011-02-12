@@ -123,7 +123,6 @@ public class Ruler extends JComponent {
 			return;
 		}
 		Rectangle clipRect = g.getClipBounds();
-		System.err.println(clipRect);
 
 		bufferGraphics.setColor(COLOR);
 		bufferGraphics.fillRect(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
