@@ -13,10 +13,13 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+
+import org.apache.log4j.Logger;
 
 import com.diyfever.gui.miscutils.Utils;
 
@@ -66,8 +69,16 @@ class UpdateDialog extends JDialog {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Utils.openURL(latestVersionUrl);
-				UpdateDialog.this.setVisible(false);
+				try {
+					Utils.openURL(latestVersionUrl);
+					UpdateDialog.this.setVisible(false);
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(UpdateDialog.this,
+							"Could not launch default browser. To downlaod the latest version visit "
+									+ latestVersionUrl);
+					Logger.getLogger(UpdateDialog.class).error("Could not launch default browser",
+							e1);
+				}
 			}
 		});
 		buttonPanel.add(downloadButton);

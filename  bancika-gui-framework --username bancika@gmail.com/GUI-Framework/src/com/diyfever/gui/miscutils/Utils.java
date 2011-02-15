@@ -2,66 +2,40 @@ package com.diyfever.gui.miscutils;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 
 public class Utils {
 
-	// Used to identify the windows platform.
-	private static final String WIN_ID = "Windows";
-	// The default system browser under windows.
-	private static final String WIN_PATH = "rundll32";
-	// The flag to display a url.
-	private static final String WIN_FLAG = "url.dll,FileProtocolHandler";
-	// The default browser under unix.
-	private static final String UNIX_PATH = "netscape";
-	// The flag to display a url.
-	private static final String UNIX_FLAG = "-remote openURL";
+	static final String[] browsers = { "google-chrome", "firefox", "opera", "epiphany",
+			"konqueror", "conkeror", "midori", "kazehakase", "mozilla" };
+	static final String errMsg = "Error attempting to launch web browser";
 
-	/**
-	 * Display a file in the system browser. If you want to display a file, you
-	 * must include the absolute path name.
-	 * 
-	 * @param url
-	 *            the file's url (the url must start with either "http://" or
-	 *            "file://").
-	 */
-	public static void openURL(String url) {
-		boolean windows = isWindowsPlatform();
-		String cmd = null;
-		try {
-			if (windows) {
-				// cmd = 'rundll32 url.dll,FileProtocolHandler http://...'
-				cmd = WIN_PATH + " " + WIN_FLAG + " " + url;
-				Runtime.getRuntime().exec(cmd);
-			} else {
-				// Under Unix, Netscape has to be running for the "-remote"
-				// command to work. So, we try sending the command and
-				// check for an exit value. If the exit command is 0,
-				// it worked, otherwise we need to start the browser.
-				// cmd = 'netscape -remote openURL(http://www.java-tips.org)'
-				cmd = UNIX_PATH + " " + UNIX_FLAG + "(" + url + ")";
-				Process p = Runtime.getRuntime().exec(cmd);
-				try {
-					// wait for exit code -- if it's 0, command worked,
-					// otherwise we need to start the browser up.
-					int exitCode = p.waitFor();
-					if (exitCode != 0) {
-						// Command failed, start up the browser
-						// cmd = 'netscape http://www.java-tips.org'
-						cmd = UNIX_PATH + " " + url;
-						p = Runtime.getRuntime().exec(cmd);
-					}
-				} catch (InterruptedException x) {
-					System.err.println("Error bringing up browser, cmd='" + cmd + "'");
-					System.err.println("Caught: " + x);
+	public static void openURL(String url) throws Exception {
+		try { // attempt to use Desktop library from JDK 1.6+
+			Class<?> d = Class.forName("java.awt.Desktop");
+			d.getDeclaredMethod("browse", new Class[] { java.net.URI.class }).invoke(
+					d.getDeclaredMethod("getDesktop").invoke(null),
+					new Object[] { java.net.URI.create(url) });
+			// above code mimicks: java.awt.Desktop.getDesktop().browse()
+		} catch (Exception ignore) { // library not available or failed
+			String osName = System.getProperty("os.name");
+				if (osName.startsWith("Mac OS")) {
+					Class.forName("com.apple.eio.FileManager").getDeclaredMethod("openURL",
+							new Class[] { String.class }).invoke(null, new Object[] { url });
+				} else if (osName.startsWith("Windows"))
+					Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+				else { // assume Unix or Linux
+					String browser = null;
+					for (String b : browsers)
+						if (browser == null
+								&& Runtime.getRuntime().exec(new String[] { "which", b })
+										.getInputStream().read() != -1)
+							Runtime.getRuntime().exec(new String[] { browser = b, url });
+					if (browser == null)
+						throw new Exception(Arrays.toString(browsers));
 				}
-			}
-		} catch (IOException x) {
-			// couldn't exec browser
-			System.err.println("Could not invoke browser, command=" + cmd);
-			System.err.println("Caught: " + x);
 		}
 	}
 
@@ -94,21 +68,6 @@ public class Utils {
 	}
 
 	/**
-	 * Try to determine whether this application is running under Windows or
-	 * some other platform by examing the "os.name" property.
-	 * 
-	 * @return true if this application is running under a Windows OS
-	 */
-	public static boolean isWindowsPlatform() {
-		String os = System.getProperty("os.name");
-		if (os != null && os.startsWith(WIN_ID))
-			return true;
-		else
-			return false;
-
-	}
-
-	/**
 	 * Creates a rectangle which opposite corners are lying in the specified
 	 * points.
 	 * 
@@ -123,7 +82,7 @@ public class Utils {
 		int height = Math.abs(p1.y - p2.y);
 		return new Rectangle(minX, minY, width, height);
 	}
-	
+
 	public static String toCommaString(List<?> list) {
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < list.size(); i++) {
