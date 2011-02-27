@@ -3,7 +3,9 @@ package com.diyfever.gui.miscutils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -27,6 +29,7 @@ public class ConfigurationManager {
 
 	private XStream xStream;
 	private Map<String, Object> configuration;
+	private Map<String, List<IConfigListener>> listeners;
 
 	public static ConfigurationManager getInstance() {
 		if (instance == null) {
@@ -36,8 +39,20 @@ public class ConfigurationManager {
 	}
 
 	private ConfigurationManager() {
-		xStream = new XStream(new DomDriver());
+		this.listeners = new HashMap<String, List<IConfigListener>>();
+		this.xStream = new XStream(new DomDriver());
 		initializeConfiguration();
+	}
+
+	public void addConfigListener(String key, IConfigListener listener) {
+		List<IConfigListener> listenerList;
+		if (listeners.containsKey(key)) {
+			listenerList = listeners.get(key);
+		} else {
+			listenerList = new ArrayList<IConfigListener>();
+			listeners.put(key, listenerList);
+		}
+		listenerList.add(listener);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -116,5 +131,10 @@ public class ConfigurationManager {
 	public void writeValue(String key, Object value) {
 		configuration.put(key, value);
 		saveConfigration();
+		if (listeners.containsKey(key)) {
+			for (IConfigListener listener : listeners.get(key)) {
+				listener.valueChanged(key, value);
+			}
+		}
 	}
 }
