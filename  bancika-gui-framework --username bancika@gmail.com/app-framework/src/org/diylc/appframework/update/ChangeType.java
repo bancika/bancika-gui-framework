@@ -1,6 +1,6 @@
 package org.diylc.appframework.update;
 
-enum ChangeType {
+public enum ChangeType {
 
 	BUG_FIX("Bug Fix"), NEW_FEATURE("New Feature"), IMPROVEMENT("Improvement");
 

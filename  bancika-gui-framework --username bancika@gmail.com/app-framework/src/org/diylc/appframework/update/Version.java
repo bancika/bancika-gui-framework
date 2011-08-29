@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-class Version implements Serializable, Comparable<Version> {
+public class Version implements Serializable, Comparable<Version> {
 
 	private static final long serialVersionUID = 1L;
 

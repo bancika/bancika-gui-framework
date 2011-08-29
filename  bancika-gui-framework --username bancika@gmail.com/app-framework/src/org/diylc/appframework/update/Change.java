@@ -2,7 +2,7 @@ package org.diylc.appframework.update;
 
 import java.io.Serializable;
 
-class Change implements Serializable {
+public class Change implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
