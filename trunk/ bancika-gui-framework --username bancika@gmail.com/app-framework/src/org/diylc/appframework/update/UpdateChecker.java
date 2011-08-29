@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-class UpdateChecker {
+public class UpdateChecker {
 
 	private static final Logger LOG = Logger.getLogger(UpdateChecker.class);
 
