@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="lib/junit-4.7.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.5-FINAL-20090928.jar"/>
 	<classpathentry kind="lib" path="lib/iText-2.1.7.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/app-framework"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
