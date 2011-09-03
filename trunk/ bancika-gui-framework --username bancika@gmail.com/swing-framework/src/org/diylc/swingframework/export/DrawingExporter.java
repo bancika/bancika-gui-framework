@@ -42,7 +42,7 @@ public class DrawingExporter {
 
 	private static final double margin = 0; // 1cm
 	private static final int PDF_RESOLUTION = 72;
-	private static final int BITMAP_SCALE_FACTOR = 3;
+	private static final int PNG_RESOLUTION = 300;
 	private static final int SCREEN_RESOLUTION = Toolkit.getDefaultToolkit().getScreenResolution();
 
 	private static DrawingExporter instance;
@@ -210,12 +210,12 @@ public class DrawingExporter {
 	public void exportPNG(IDrawingProvider plugInPort, File file) {
 		try {
 			Dimension d = plugInPort.getSize();
-			BufferedImage image = new BufferedImage((int) d.getWidth() * BITMAP_SCALE_FACTOR, (int) d
-					.getHeight()
-					* BITMAP_SCALE_FACTOR, BufferedImage.TYPE_INT_RGB);
+			double factor = 1f * PNG_RESOLUTION / SCREEN_RESOLUTION;
+			BufferedImage image = new BufferedImage((int) (d.getWidth() * factor), (int) (d
+					.getHeight() * factor), BufferedImage.TYPE_INT_RGB);
 			Graphics2D g2d = (Graphics2D) image.getGraphics();
 
-			g2d.scale(BITMAP_SCALE_FACTOR, BITMAP_SCALE_FACTOR);
+			g2d.scale(factor, factor);
 			plugInPort.draw(g2d);
 
 			g2d.dispose();
