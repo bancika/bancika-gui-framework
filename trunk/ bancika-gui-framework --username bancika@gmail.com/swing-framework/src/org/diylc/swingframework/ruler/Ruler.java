@@ -94,16 +94,18 @@ public class Ruler extends JComponent {
 	private void setIncrementAndUnits() {
 		if (isMetric) {
 			unitSize = (float) ((cmSpacing == 0 ? PIXELS_PER_INCH / 2.54f : cmSpacing) * zoomLevel);
+			ticksPerUnit = 4;
 		} else {
+			ticksPerUnit = 10;
 			unitSize = (float) ((inSpacing == 0 ? (PIXELS_PER_INCH) : inSpacing) * zoomLevel);
 		}
-		ticksPerUnit = 1;
-		while (unitSize / ticksPerUnit > 48) {
-			ticksPerUnit *= 2;
-		}
-		while (unitSize / ticksPerUnit < 24) {
-			ticksPerUnit /= 2;
-		}
+		// ticksPerUnit = 1;
+		// while (unitSize / ticksPerUnit > 48) {
+		// ticksPerUnit *= 2;
+		// }
+		// while (unitSize / ticksPerUnit < 24) {
+		// ticksPerUnit /= 2;
+		// }
 	}
 
 	public boolean isMetric() {
@@ -135,7 +137,7 @@ public class Ruler extends JComponent {
 		float start = 0;
 		int tickLength = 0;
 		String text = null;
-//		int count;
+		// int count;
 		float increment = unitSize / ticksPerUnit;
 
 		// Use clipping bounds to calculate first and last tick locations.
@@ -143,11 +145,11 @@ public class Ruler extends JComponent {
 		if (orientation == HORIZONTAL) {
 			firstUnit = Math.round(clipRect.x / unitSize);
 			start = (int) (clipRect.x / unitSize) * unitSize;
-//			count = Math.round(clipRect.width / increment) + 1;
+			// count = Math.round(clipRect.width / increment) + 1;
 		} else {
 			firstUnit = Math.round(clipRect.y / unitSize);
 			start = (int) (clipRect.y / unitSize) * unitSize;
-//			count = Math.round(clipRect.height / increment) + 1;
+			// count = Math.round(clipRect.height / increment) + 1;
 		}
 
 		// ticks and labels
@@ -159,7 +161,12 @@ public class Ruler extends JComponent {
 				tickLength = 10;
 				text = Integer.toString(firstUnit + Math.round(i / ticksPerUnit));
 			} else {
-				tickLength = 7 - 2 * (i % Math.round(ticksPerUnit) % 2);
+				tickLength = 7;
+				if (isMetric) {
+					tickLength -= 2 * (i % Math.round(ticksPerUnit) % 2);
+				} else if (i % Math.round(ticksPerUnit) != 5) {
+					tickLength -= 2;
+				}
 				text = null;
 			}
 
