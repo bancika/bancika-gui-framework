@@ -21,21 +21,21 @@ public class Utils {
 			// above code mimicks: java.awt.Desktop.getDesktop().browse()
 		} catch (Exception ignore) { // library not available or failed
 			String osName = System.getProperty("os.name");
-				if (osName.startsWith("Mac OS")) {
-					Class.forName("com.apple.eio.FileManager").getDeclaredMethod("openURL",
-							new Class[] { String.class }).invoke(null, new Object[] { url });
-				} else if (osName.startsWith("Windows"))
-					Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
-				else { // assume Unix or Linux
-					String browser = null;
-					for (String b : browsers)
-						if (browser == null
-								&& Runtime.getRuntime().exec(new String[] { "which", b })
-										.getInputStream().read() != -1)
-							Runtime.getRuntime().exec(new String[] { browser = b, url });
-					if (browser == null)
-						throw new Exception(Arrays.toString(browsers));
-				}
+			if (osName.startsWith("Mac OS")) {
+				Class.forName("com.apple.eio.FileManager").getDeclaredMethod("openURL",
+						new Class[] { String.class }).invoke(null, new Object[] { url });
+			} else if (osName.startsWith("Windows"))
+				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+			else { // assume Unix or Linux
+				String browser = null;
+				for (String b : browsers)
+					if (browser == null
+							&& Runtime.getRuntime().exec(new String[] { "which", b })
+									.getInputStream().read() != -1)
+						Runtime.getRuntime().exec(new String[] { browser = b, url });
+				if (browser == null)
+					throw new Exception(Arrays.toString(browsers));
+			}
 		}
 	}
 
@@ -65,6 +65,30 @@ public class Utils {
 			}
 		}
 		return clone;
+	}
+
+	public static boolean isWindows() {
+		String os = System.getProperty("os.name").toLowerCase();
+		// windows
+		return (os.indexOf("win") >= 0);
+	}
+
+	public static boolean isMac() {
+		String os = System.getProperty("os.name").toLowerCase();
+		// Mac
+		return (os.indexOf("mac") >= 0);
+	}
+
+	public static boolean isUnix() {
+		String os = System.getProperty("os.name").toLowerCase();
+		// linux or unix
+		return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
+	}
+
+	public static boolean isSolaris() {
+		String os = System.getProperty("os.name").toLowerCase();
+		// Solaris
+		return (os.indexOf("sunos") >= 0);
 	}
 
 	/**
