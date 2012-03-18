@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 
 import javax.imageio.ImageIO;
 
+import org.diylc.appframework.miscutils.Utils;
 import org.diylc.swingframework.IDrawingProvider;
 
 import com.lowagie.text.Document;
@@ -190,8 +191,16 @@ public class DrawingExporter {
 		document.open();
 		PdfContentByte contentByte = writer.getDirectContent();
 		PdfTemplate template = contentByte.createTemplate(totalWidth, totalHeight);
+		DefaultFontMapper mapper = new DefaultFontMapper();
+		if (Utils.isWindows()) {
+			mapper.insertDirectory(System.getenv("windir") + "\\Fonts");
+		} else if (Utils.isMac()) {
+			mapper.insertDirectory("$HOME/Library/Fonts");
+		} else if (Utils.isUnix()) {
+			mapper.insertDirectory("/usr/share/fonts/truetype/");
+		}
 		Graphics2D g2d = template.createGraphics((float) (factor * d.getWidth()),
-				(float) (factor * d.getHeight()), new DefaultFontMapper());
+				(float) (factor * d.getHeight()), mapper);
 		g2d.scale(factor, factor);
 
 		plugInPort.draw(g2d);
