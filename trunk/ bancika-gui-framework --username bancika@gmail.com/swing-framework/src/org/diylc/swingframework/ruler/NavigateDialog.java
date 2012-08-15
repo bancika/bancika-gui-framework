@@ -2,7 +2,6 @@ package org.diylc.swingframework.ruler;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -117,6 +116,7 @@ public class NavigateDialog extends JDialog {
 			g2d.setTransform(new AffineTransform());
 			g2d.setColor(Color.lightGray);
 			g2d.drawRect(0, 0, width - 1, height - 1);
+			g2d.dispose();
 			// addComponentListener(new ComponentAdapter() {
 			//
 			// @Override
@@ -191,7 +191,7 @@ public class NavigateDialog extends JDialog {
 					return;
 				}
 
-				Composite oldComposite = g2d.getComposite();
+				//Composite oldComposite = g2d.getComposite();
 				try {
 					AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
 							0.1f);
@@ -223,11 +223,11 @@ public class NavigateDialog extends JDialog {
 					g2d.setColor(Color.blue.darker());
 					g2d.drawRect(x, y, visibleWidth, visibleHeight);
 				} finally {
-					g2d.setComposite(oldComposite);
-				}
+					g2d.dispose();					
+				}				
 			} while (bufferImage.contentsLost());
 
-			g.drawImage(bufferImage, 0, 0, this);
+			g.drawImage(bufferImage, 0, 0, this);			
 		}
 
 		@Override

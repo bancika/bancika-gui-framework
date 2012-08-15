@@ -231,6 +231,6 @@ public class TableExporter {
 		table.paint(g2d);
 		LOG.debug("Writing image to file");
 		ImageIO.write(image, "png", file);
-
+		g2d.dispose();
 	}
 }
