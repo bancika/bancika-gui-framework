@@ -23,12 +23,17 @@ public class ComponentThumbnailProvider implements IDrawingProvider {
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public Dimension getSize() {
+		return view.getSize();
+	}
+
+	@Override
+	public void draw(int page, Graphics g) {
 		view.paint(g);
 	}
 
 	@Override
-	public Dimension getSize() {
-		return view.getSize();
+	public int getPageCount() {
+		return 1;
 	}
 }

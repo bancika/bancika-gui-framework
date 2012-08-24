@@ -18,9 +18,17 @@ public interface IDrawingProvider {
 	Dimension getSize();
 
 	/**
+	 * Returns number of pages.
+	 * 
+	 * @return
+	 */
+	int getPageCount();
+
+	/**
 	 * Draws on the {@link Graphics}.
 	 * 
+	 * @param page
 	 * @param g
 	 */
-	void draw(Graphics g);
+	void draw(int page, Graphics g);
 }
