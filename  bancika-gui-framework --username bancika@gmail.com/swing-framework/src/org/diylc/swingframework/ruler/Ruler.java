@@ -26,7 +26,8 @@ public class Ruler extends JComponent {
 
 	public static final Color COLOR = Color.decode("#C0FF3E");
 
-	public static final int PIXELS_PER_INCH = Toolkit.getDefaultToolkit().getScreenResolution();
+	public static final int PIXELS_PER_INCH = Toolkit.getDefaultToolkit()
+			.getScreenResolution();
 	public static final int HORIZONTAL = 0;
 	public static final int VERTICAL = 1;
 	public static final int SIZE = 18;
@@ -50,7 +51,8 @@ public class Ruler extends JComponent {
 		this(orientation, isMetric, 0, 0);
 	}
 
-	public Ruler(int orientation, boolean isMetric, double cmSpacing, double inSpacing) {
+	public Ruler(int orientation, boolean isMetric, double cmSpacing,
+			double inSpacing) {
 		this.orientation = orientation;
 		this.isMetric = isMetric;
 		this.cmSpacing = cmSpacing;
@@ -61,8 +63,8 @@ public class Ruler extends JComponent {
 
 			@Override
 			public void componentResized(ComponentEvent e) {
-				bufferImage = new BufferedImage(e.getComponent().getWidth(), e.getComponent()
-						.getHeight(), BufferedImage.TYPE_INT_RGB);
+				bufferImage = new BufferedImage(e.getComponent().getWidth(), e
+						.getComponent().getHeight(), BufferedImage.TYPE_INT_RGB);
 				bufferGraphics = bufferImage.getGraphics();
 			}
 		});
@@ -93,7 +95,8 @@ public class Ruler extends JComponent {
 
 	private void setIncrementAndUnits() {
 		if (isMetric) {
-			unitSize = (float) ((cmSpacing == 0 ? PIXELS_PER_INCH / 2.54f : cmSpacing) * zoomLevel);
+			unitSize = (float) ((cmSpacing == 0 ? PIXELS_PER_INCH / 2.54f
+					: cmSpacing) * zoomLevel);
 			ticksPerUnit = 4;
 		} else {
 			ticksPerUnit = 10;
@@ -127,7 +130,8 @@ public class Ruler extends JComponent {
 		Rectangle clipRect = g.getClipBounds();
 
 		bufferGraphics.setColor(COLOR);
-		bufferGraphics.fillRect(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
+		bufferGraphics.fillRect(clipRect.x, clipRect.y, clipRect.width,
+				clipRect.height);
 
 		// Do the ruler labels in a small font that's black.
 		bufferGraphics.setFont(new Font("SansSerif", Font.PLAIN, 10));
@@ -143,11 +147,11 @@ public class Ruler extends JComponent {
 		// Use clipping bounds to calculate first and last tick locations.
 		int firstUnit;
 		if (orientation == HORIZONTAL) {
-			firstUnit = Math.round(clipRect.x / unitSize);
+			firstUnit = (int) (clipRect.x / unitSize);
 			start = (int) (clipRect.x / unitSize) * unitSize;
 			// count = Math.round(clipRect.width / increment) + 1;
 		} else {
-			firstUnit = Math.round(clipRect.y / unitSize);
+			firstUnit = (int) (clipRect.y / unitSize);
 			start = (int) (clipRect.y / unitSize) * unitSize;
 			// count = Math.round(clipRect.height / increment) + 1;
 		}
@@ -155,11 +159,15 @@ public class Ruler extends JComponent {
 		// ticks and labels
 		int x = 0;
 		int i = 0;
+		// System.out.print("start\n");
 		while (x < (orientation == HORIZONTAL ? (clipRect.x + clipRect.width)
 				: (clipRect.y + clipRect.height))) {
 			if ((ticksPerUnit <= 1) || (i % Math.round(ticksPerUnit) == 0)) {
 				tickLength = 10;
-				text = Integer.toString(firstUnit + Math.round(i / ticksPerUnit));
+				text = Integer.toString(firstUnit
+						+ Math.round(i / ticksPerUnit));
+				// System.out.printf("firstUnit: %s; ticksPerUnit: %s; i: %s; text: %s\n",
+				// firstUnit, ticksPerUnit, i, text);
 			} else {
 				tickLength = 7;
 				if (isMetric) {
@@ -174,33 +182,39 @@ public class Ruler extends JComponent {
 
 			if (tickLength != 0) {
 				if (orientation == HORIZONTAL) {
-					bufferGraphics.drawLine(x, SIZE - 1, x, SIZE - tickLength - 1);
+					bufferGraphics.drawLine(x, SIZE - 1, x, SIZE - tickLength
+							- 1);
 					if (text != null) {
 						bufferGraphics.drawString(text, x + 2, 15);
 					}
 				} else {
-					bufferGraphics.drawLine(SIZE - 1, x, SIZE - tickLength - 1, x);
+					bufferGraphics.drawLine(SIZE - 1, x, SIZE - tickLength - 1,
+							x);
 					if (text != null) {
 						FontMetrics fm = bufferGraphics.getFontMetrics();
 						bufferGraphics.drawString(text, SIZE
-								- (int) fm.getStringBounds(text, bufferGraphics).getWidth() - 2,
-								x + 10);
+								- (int) fm
+										.getStringBounds(text, bufferGraphics)
+										.getWidth() - 2, x + 10);
 					}
 				}
 			}
 			i++;
 		}
+		// System.out.print("end\n");
 
 		// highlight value
 		if (indicatorValue >= 0) {
 			bufferGraphics.setColor(Color.red);
 			if (orientation == HORIZONTAL) {
 				if (indicatorValue < getWidth()) {
-					bufferGraphics.drawLine(indicatorValue, 0, indicatorValue, SIZE - 1);
+					bufferGraphics.drawLine(indicatorValue, 0, indicatorValue,
+							SIZE - 1);
 				}
 			} else {
 				if (indicatorValue < getHeight()) {
-					bufferGraphics.drawLine(0, indicatorValue, SIZE - 1, indicatorValue);
+					bufferGraphics.drawLine(0, indicatorValue, SIZE - 1,
+							indicatorValue);
 				}
 			}
 		}
