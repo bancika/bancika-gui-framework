@@ -10,6 +10,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
@@ -25,6 +26,7 @@ public class Ruler extends JComponent {
 	private static final long serialVersionUID = 1L;
 
 	public static final Color COLOR = Color.decode("#C0FF3E");
+	public static final Color SELECTION_COLOR = Color.blue;
 
 	public static final int PIXELS_PER_INCH = Toolkit.getDefaultToolkit()
 			.getScreenResolution();
@@ -47,6 +49,8 @@ public class Ruler extends JComponent {
 	private double cmSpacing;
 	private double inSpacing;
 
+	private Rectangle2D selectionRect = null;
+
 	public Ruler(int orientation, boolean isMetric) {
 		this(orientation, isMetric, 0, 0);
 	}
@@ -68,6 +72,11 @@ public class Ruler extends JComponent {
 				bufferGraphics = bufferImage.getGraphics();
 			}
 		});
+	}
+
+	public void setSelectionRect(Rectangle2D selectionRect) {
+		this.selectionRect = selectionRect;
+		repaint();
 	}
 
 	public void setZoomLevel(double zoomLevel) {
@@ -216,6 +225,29 @@ public class Ruler extends JComponent {
 					bufferGraphics.drawLine(0, indicatorValue, SIZE - 1,
 							indicatorValue);
 				}
+			}
+		}
+
+		// selection
+		if (selectionRect != null) {
+			bufferGraphics.setColor(SELECTION_COLOR);
+			if (orientation == HORIZONTAL) {
+				bufferGraphics.drawLine((int) selectionRect.getX(), 0,
+						(int) selectionRect.getX(), SIZE - 1);
+				bufferGraphics
+						.drawLine((int) (selectionRect.getX() + selectionRect
+								.getWidth()), 0,
+								(int) (selectionRect.getX() + selectionRect
+										.getWidth()), SIZE - 1);
+			} else {
+				bufferGraphics.drawLine(0, (int) selectionRect.getY(),
+						SIZE - 1, (int) selectionRect.getY());
+				bufferGraphics
+						.drawLine(0,
+								(int) (selectionRect.getY() + selectionRect
+										.getHeight()), SIZE - 1,
+								(int) (selectionRect.getY() + selectionRect
+										.getHeight()));
 			}
 		}
 
