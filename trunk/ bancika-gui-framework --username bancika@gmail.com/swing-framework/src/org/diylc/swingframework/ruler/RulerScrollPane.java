@@ -10,6 +10,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class RulerScrollPane extends JScrollPane {
 	private JButton navigateButton;
 
 	private List<IRulerListener> listeners;
-
+	
 	public RulerScrollPane(Component view) {
 		this(view, new ComponentThumbnailProvider(view));
 	}
@@ -169,6 +170,11 @@ public class RulerScrollPane extends JScrollPane {
 		getHorizontalScrollBar().setUnitIncrement(50);
 		setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		getVerticalScrollBar().setUnitIncrement(50);
+	}
+	
+	public void setSelectionRectangle(Rectangle2D rect) {
+		horizontalRuler.setSelectionRect(rect);
+		verticalRuler.setSelectionRect(rect);
 	}
 
 	public boolean addUnitListener(IRulerListener e) {
