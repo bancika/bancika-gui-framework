@@ -43,7 +43,8 @@ public class JarScanner {
 
 		LOG.debug("Scanning " + jar.getName());
 		try {
-			JarInputStream jarFile = new JarInputStream(new FileInputStream(jar));
+			JarInputStream jarFile = new JarInputStream(
+					new FileInputStream(jar));
 			JarEntry jarEntry;
 
 			while (true) {
@@ -52,8 +53,10 @@ public class JarScanner {
 					break;
 				}
 				if (jarEntry.getName().endsWith(".class")) {
-					String className = jarEntry.getName().replaceAll("/", "\\.");
-					className = className.substring(0, className.lastIndexOf('.'));
+					String className = jarEntry.getName()
+							.replaceAll("/", "\\.");
+					className = className.substring(0, className
+							.lastIndexOf('.'));
 					if (!className.contains("$")) {
 						LOG.trace("Found " + className);
 						classes.add(className);
@@ -104,31 +107,39 @@ public class JarScanner {
 		List<File> jars = getJarFiles(new File(folderName), true);
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		for (File jar : jars) {
-			List<String> classNames = extractClassNames(jar);
-			if (!classNames.isEmpty()) {
-				String filePath = jar.getAbsolutePath();
-				try {
-					ClassLoaderUtil.addFile(filePath);
-					filePath = "jar:file://" + filePath + "!/";
-					URL url = new File(filePath).toURI().toURL();
-					URLClassLoader clazzLoader = new URLClassLoader(new URL[] { url });
-					for (String className : classNames) {
-						Class<?> clazz;
-						try {
-							clazz = clazzLoader.loadClass(className);
-							if (baseInterface.isAssignableFrom(clazz) && !clazz.isInterface()) {
-								LOG.debug("Loaded class: " + className);
-								classes.add(clazz);
-							}
-						} catch (ClassNotFoundException e) {
-							LOG.warn("Class not found: " + className);
-						} catch (Throwable t) {
-							LOG.warn("Could not load: " + className);
+			classes.addAll(scanJar(jar, baseInterface));
+		}
+		return classes;
+	}
+
+	public List<Class<?>> scanJar(File jar, Class<?> baseInterface) {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
+		List<String> classNames = extractClassNames(jar);
+		if (!classNames.isEmpty()) {
+			String filePath = jar.getAbsolutePath();
+			try {
+				ClassLoaderUtil.addFile(filePath);
+				filePath = "jar:file://" + filePath + "!/";
+				URL url = new File(filePath).toURI().toURL();
+				URLClassLoader clazzLoader = new URLClassLoader(
+						new URL[] { url });
+				for (String className : classNames) {
+					Class<?> clazz;
+					try {
+						clazz = clazzLoader.loadClass(className);
+						if (baseInterface.isAssignableFrom(clazz)
+								&& !clazz.isInterface()) {
+							LOG.debug("Loaded class: " + className);
+							classes.add(clazz);
 						}
+					} catch (ClassNotFoundException e) {
+						LOG.warn("Class not found: " + className);
+					} catch (Throwable t) {
+						LOG.warn("Could not load: " + className);
 					}
-				} catch (Exception e) {
-					LOG.warn("Could not add JAR to the classpath.", e);
 				}
+			} catch (Exception e) {
+				LOG.warn("Could not add JAR to the classpath.", e);
 			}
 		}
 		return classes;
