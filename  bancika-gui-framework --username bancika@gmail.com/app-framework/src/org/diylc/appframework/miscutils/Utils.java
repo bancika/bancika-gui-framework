@@ -2,37 +2,46 @@ package org.diylc.appframework.miscutils;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 public class Utils {
 
-	static final String[] browsers = { "google-chrome", "firefox", "opera", "epiphany",
-			"konqueror", "conkeror", "midori", "kazehakase", "mozilla" };
+	static final String[] browsers = { "google-chrome", "firefox", "opera",
+			"epiphany", "konqueror", "conkeror", "midori", "kazehakase",
+			"mozilla" };
 	static final String errMsg = "Error attempting to launch web browser";
 
 	public static void openURL(String url) throws Exception {
 		try { // attempt to use Desktop library from JDK 1.6+
 			Class<?> d = Class.forName("java.awt.Desktop");
-			d.getDeclaredMethod("browse", new Class[] { java.net.URI.class }).invoke(
-					d.getDeclaredMethod("getDesktop").invoke(null),
-					new Object[] { java.net.URI.create(url) });
+			d.getDeclaredMethod("browse", new Class[] { java.net.URI.class })
+					.invoke(d.getDeclaredMethod("getDesktop").invoke(null),
+							new Object[] { java.net.URI.create(url) });
 			// above code mimicks: java.awt.Desktop.getDesktop().browse()
 		} catch (Exception ignore) { // library not available or failed
 			String osName = System.getProperty("os.name");
 			if (osName.startsWith("Mac OS")) {
-				Class.forName("com.apple.eio.FileManager").getDeclaredMethod("openURL",
-						new Class[] { String.class }).invoke(null, new Object[] { url });
+				Class.forName("com.apple.eio.FileManager").getDeclaredMethod(
+						"openURL", new Class[] { String.class }).invoke(null,
+						new Object[] { url });
 			} else if (osName.startsWith("Windows"))
-				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+				Runtime.getRuntime().exec(
+						"rundll32 url.dll,FileProtocolHandler " + url);
 			else { // assume Unix or Linux
 				String browser = null;
 				for (String b : browsers)
 					if (browser == null
-							&& Runtime.getRuntime().exec(new String[] { "which", b })
+							&& Runtime.getRuntime().exec(
+									new String[] { "which", b })
 									.getInputStream().read() != -1)
-						Runtime.getRuntime().exec(new String[] { browser = b, url });
+						Runtime.getRuntime().exec(
+								new String[] { browser = b, url });
 				if (browser == null)
 					throw new Exception(Arrays.toString(browsers));
 			}
@@ -51,7 +60,8 @@ public class Utils {
 		}
 
 		// Walk up the superclass hierarchy
-		for (Class<?> obj = o.getClass(); !obj.equals(Object.class); obj = obj.getSuperclass()) {
+		for (Class<?> obj = o.getClass(); !obj.equals(Object.class); obj = obj
+				.getSuperclass()) {
 			Field[] fields = obj.getDeclaredFields();
 			for (int i = 0; i < fields.length; i++) {
 				fields[i].setAccessible(true);
@@ -89,6 +99,27 @@ public class Utils {
 		String os = System.getProperty("os.name").toLowerCase();
 		// Solaris
 		return (os.indexOf("sunos") >= 0);
+	}
+
+	public static String[] getClasspath(Class<?> clazz) {
+		try {
+			URL url = clazz.getResource(clazz.getSimpleName() + ".class");
+			String name = url.toString();
+			name = name.substring(0, name.length()
+					- clazz.getName().replace('.', '/').concat(".class")
+							.length());
+			name += "META-INF/MANIFEST.MF";
+			url = new URL(name);
+			InputStream is = url.openStream();
+			Manifest manifest = new Manifest();
+			manifest.read(is);
+			Attributes attributes = manifest.getMainAttributes();
+			Object value = attributes.get(Attributes.Name.CLASS_PATH);
+			return value.toString().split(" ");
+		} catch (Exception e) {
+			return System.getProperty("java.class.path").split(
+					isWindows() ? ";" : ":");
+		}
 	}
 
 	/**
