@@ -41,6 +41,7 @@ public class ConfigurationManager {
 	private ConfigurationManager() {
 		this.listeners = new HashMap<String, List<IConfigListener>>();
 		this.xStream = new XStream(new DomDriver());
+		xStream.registerConverter(new IconImageConverter());
 		initializeConfiguration();
 	}
 
