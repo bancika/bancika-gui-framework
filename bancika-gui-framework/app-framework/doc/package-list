@@ -1,10 +1,5 @@
-com.diyfever.gui
-com.diyfever.gui.autofit
-com.diyfever.gui.export
-com.diyfever.gui.images
-com.diyfever.gui.miscutils
-com.diyfever.gui.objecttable
-com.diyfever.gui.ruler
-com.diyfever.gui.simplemq
-com.diyfever.gui.undo
-com.diyfever.gui.update
+org.diylc.appframework.images
+org.diylc.appframework.miscutils
+org.diylc.appframework.simplemq
+org.diylc.appframework.undo
+org.diylc.appframework.update
