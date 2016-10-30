@@ -4,5 +4,6 @@ org.diylc.swingframework.export
 org.diylc.swingframework.images
 org.diylc.swingframework.miscutils
 org.diylc.swingframework.objecttable
+org.diylc.swingframework.openide
 org.diylc.swingframework.ruler
 org.diylc.swingframework.update
