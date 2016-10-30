@@ -69,7 +69,7 @@ public class ConfigurationManager {
 		}
 	}
 
-	public void saveConfigration() {
+	private void saveConfigration() {
 		LOG.info("Saving configuration");
 		File configFile = new File("config.xml");
 		try {
