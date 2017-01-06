@@ -22,8 +22,7 @@ public class RoundedPath {
 
   private GeneralPath path;
 
-  private double prevX = Double.NaN;
-  private double prevY = Double.NaN;
+  boolean isFirst = true;
   private double x = Double.NaN;
   private double y = Double.NaN;
 
@@ -38,12 +37,11 @@ public class RoundedPath {
     path.moveTo(x, y);
     this.x = x;
     this.y = y;
-    this.prevX = Double.NaN;
-    this.prevY = Double.NaN;
+    isFirst = true;
   }
 
   public final void lineTo(double x, double y) {
-    if (Double.isNaN(prevX)) {
+    if (isFirst) {
       double theta = Math.atan2(y - this.y, x - this.x);
       double r = Math.sqrt((y - this.y) * (y - this.y) + (x - this.x) * (x - this.x));
       path.lineTo(this.x + Math.cos(theta) * (r - radius), this.y + Math.sin(theta) * (r - radius));
@@ -52,8 +50,7 @@ public class RoundedPath {
       path.curveTo(this.x, this.y, this.x, this.y, this.x + Math.cos(theta) * radius, this.y + Math.sin(theta) * radius);
     }
 
-    this.prevX = this.x;
-    this.prevY = this.y;
+    isFirst = false;
     this.x = x;
     this.y = y;
   }
