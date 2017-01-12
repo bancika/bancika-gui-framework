@@ -85,9 +85,9 @@ public class ObjectListTable<T> extends AutoFitTable {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int columnIndex = columnAtPoint(e.getPoint());
-				if (((ObjectListTableModel) getModel()).getActionColumns().contains(columnIndex)) {
+				if (((ObjectListTableModel<T>) getModel()).getActionColumns().contains(columnIndex)) {
 					int rowIndex = rowAtPoint(e.getPoint());
-					Object value = ((ObjectListTableModel) getModel()).getData().get(rowIndex);
+					Object value = ((ObjectListTableModel<T>) getModel()).getData().get(rowIndex);
 					ObjectListTable.this.clickListener.actionExecuted((T) value, getModel()
 							.getColumnName(columnIndex));
 				}
@@ -99,7 +99,7 @@ public class ObjectListTable<T> extends AutoFitTable {
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				int columnIndex = columnAtPoint(e.getPoint());
-				if (((ObjectListTableModel) getModel()).getActionColumns().contains(columnIndex)) {
+				if (((ObjectListTableModel<T>) getModel()).getActionColumns().contains(columnIndex)) {
 					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 				} else {
 					setCursor(Cursor.getDefaultCursor());
