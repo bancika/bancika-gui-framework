@@ -29,10 +29,16 @@ public class ConfigurationManager {
   private static final Logger LOG = Logger.getLogger(ConfigurationManager.class);
 
   private static ConfigurationManager instance;
+  private static String path = Utils.getUserDataDirectory("generic");
+  private static final String fileName = "config.xml";
 
   private XStream xStream;
   private Map<String, Object> configuration;
-  private Map<String, List<IConfigListener>> listeners;
+  private Map<String, List<IConfigListener>> listeners;  
+  
+  public static void initialize(String appName) {
+    path = Utils.getUserDataDirectory(appName);
+  }
 
   public static ConfigurationManager getInstance() {
     if (instance == null) {
@@ -41,9 +47,9 @@ public class ConfigurationManager {
     return instance;
   }
 
-  private ConfigurationManager() {
+  public ConfigurationManager() {
     this.listeners = new HashMap<String, List<IConfigListener>>();
-    this.xStream = new XStream(new DomDriver());
+    this.xStream = new XStream(new DomDriver());    
     xStream.registerConverter(new IconImageConverter());
     initializeConfiguration();
   }
@@ -61,8 +67,12 @@ public class ConfigurationManager {
 
   @SuppressWarnings("unchecked")
   private void initializeConfiguration() {
-    LOG.info("Initializing configuration");
-    File configFile = new File("config.xml");
+    LOG.info("Initializing configuration");    
+    
+    File configFile = new File(path + fileName);
+    // if there's no file in the preferred folder, look for it in the app folder
+    if (!configFile.exists())
+      configFile = new File(fileName);
     try {
       FileInputStream in = new FileInputStream(configFile);
       Reader reader = new InputStreamReader(in, "UTF-8");
@@ -76,7 +86,9 @@ public class ConfigurationManager {
 
   private void saveConfigration() {
     LOG.info("Saving configuration");
-    File configFile = new File("config.xml");
+
+    File configFile = new File(path + fileName);
+    new File(path).mkdirs();
     try {
       FileOutputStream out = new FileOutputStream(configFile);
       Writer writer = new OutputStreamWriter(out, "UTF-8");
