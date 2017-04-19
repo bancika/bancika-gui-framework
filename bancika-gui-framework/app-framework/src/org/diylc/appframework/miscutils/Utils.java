@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -114,16 +116,12 @@ public class Utils {
     Enumeration<URL> resources = loader.getResources(path);
     if (resources != null) {
       while (resources.hasMoreElements()) {
-        String filePath = resources.nextElement().getFile();
-        // WINDOWS HACK
-        if (filePath.indexOf("%20") > 0)
-          filePath = filePath.replaceAll("%20", " ");
+        String filePath = URLDecoder.decode(resources.nextElement().getFile(), "UTF-8");
+    
         if (filePath != null) {
           if ((filePath.indexOf("!") > 0) & (filePath.indexOf(".jar") > 0)) {
             String jarPath = filePath.substring(0, filePath.indexOf("!")).substring(filePath.indexOf(":") + 1);
-            // WINDOWS HACK
-            if (jarPath.indexOf(":") >= 0)
-              jarPath = jarPath.substring(1);
+           
             classes.addAll(getFromJARFile(jarPath, path));
           } else {
             classes.addAll(getFromDirectory(new File(filePath), packageName));
@@ -132,7 +130,7 @@ public class Utils {
       }
     }
     return classes;
-  }
+  }  
 
   public static Set<Class<?>> getFromDirectory(File directory, String packageName) throws ClassNotFoundException {
     Set<Class<?>> classes = new HashSet<Class<?>>();
