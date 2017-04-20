@@ -26,7 +26,8 @@ public class Ruler extends JComponent {
 	private static final long serialVersionUID = 1L;
 
 	public static final Color COLOR = Color.decode("#C0FF3E");
-	public static final Color SELECTION_COLOR = Color.blue;
+	public static final Color SELECTION_COLOR = Color.red;
+	public static final Color CURSOR_COLOR = Color.blue;
 
 	public static final int PIXELS_PER_INCH = Toolkit.getDefaultToolkit()
 			.getScreenResolution();
@@ -214,7 +215,7 @@ public class Ruler extends JComponent {
 
 		// highlight value
 		if (indicatorValue >= 0) {
-			bufferGraphics.setColor(Color.red);
+			bufferGraphics.setColor(CURSOR_COLOR);
 			if (orientation == HORIZONTAL) {
 				if (indicatorValue < getWidth()) {
 					bufferGraphics.drawLine(indicatorValue, 0, indicatorValue,
