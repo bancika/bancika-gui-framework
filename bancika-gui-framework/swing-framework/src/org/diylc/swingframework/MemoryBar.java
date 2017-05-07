@@ -110,7 +110,7 @@ public class MemoryBar extends JComponent {
 		}
 		g2d.fillRect(0, getHeight() - barHeight - 1, getWidth() - 1, barHeight);
 
-		g2d.setColor(UIManager.getColor("InternalFrame.borderShadow"));
+		g2d.setColor(UIManager.getColor("Button.shadow"));
 		g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 	}
 
