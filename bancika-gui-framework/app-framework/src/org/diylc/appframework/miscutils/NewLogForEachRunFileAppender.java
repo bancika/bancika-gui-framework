@@ -13,6 +13,9 @@ import org.apache.log4j.spi.ErrorCode;
  * application.
  */
 public class NewLogForEachRunFileAppender extends FileAppender {
+  
+  // delete after 7 days
+  private double deleteOlderThan = 1000 * 60 * 60 * 24 * 7;
 
   public NewLogForEachRunFileAppender() {}
 
@@ -61,6 +64,13 @@ public class NewLogForEachRunFileAppender extends FileAppender {
         newFileName = fileName + HIPHEN + df.format(new java.util.Date());
       }
       if (logFile.getParent() != null) {
+        if (deleteOlderThan > 0) {
+          for (File f : logFile.getParentFile().listFiles()) {
+            double age = System.currentTimeMillis() - f.lastModified();
+            if (age > deleteOlderThan)
+              f.delete();
+          }
+        }
         toret = logFile.getParent() + File.separator + newFileName;
       } else {
         toret = newFileName;
