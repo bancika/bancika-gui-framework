@@ -54,21 +54,22 @@ public class FontChooserComboBox extends JComboBox implements ItemListener {
   private String previewString = "AaBbCc";
   private int recentFontsCount = 5;
 
-  private List<String> fontNames;
   private HashMap<String, Item> itemsCache = new HashMap<String, Item>();
   private LinkedList<String> recentFontNames;
   private HashMap<String, Item> recentItemsCache = new HashMap<String, Item>();
-
+    
+  private static List<String> fontNames;
+  static {
+    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    String[] fonts = ge.getAvailableFontFamilyNames();
+    Arrays.sort(fonts);
+    fontNames = Arrays.asList(fonts);
+  }   
+  
   /**
    * Creates a new {@link FontChooserComboBox}.
    */
   public FontChooserComboBox() {
-    // load available font names
-    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    String[] fontNames = ge.getAvailableFontFamilyNames();
-    Arrays.sort(fontNames);
-    this.fontNames = Arrays.asList(fontNames);
-
     // recent fonts
     recentFontNames = new LinkedList<String>();
 
@@ -193,7 +194,7 @@ public class FontChooserComboBox extends JComboBox implements ItemListener {
   @Override
   public Dimension getPreferredSize() {
     // default height: like a normal combo box
-    return new Dimension(super.getPreferredSize().width, new JComboBox().getPreferredSize().height);
+    return new Dimension(0, new JComboBox().getPreferredSize().height);
   }
 
   /**
