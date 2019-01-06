@@ -77,10 +77,13 @@ public class DoubleArrayTextField extends JTextField {
 		errorLabel.setVisible(value == null);
 		try {
 			StringBuilder b = new StringBuilder();
+			boolean first = true;
 			for (Double v : value) {
-				if (b.length() > 0)
-					b.append(" / ");
-				b.append(format.format(v));
+				if (first)
+				  first = false;
+				else 
+				  b.append(" / ");
+				b.append(v == null ? "" : format.format(v));
 			}			
 			setText(value == null ? "" : b.toString());
 		} finally {
@@ -98,6 +101,10 @@ public class DoubleArrayTextField extends JTextField {
 					String[] parts = getText().trim().split("/");
 					List<Double> items = new ArrayList<Double>();
 					for (String part : parts) {
+					    if (part.trim().isEmpty()) {
+					      items.add(null);
+					      continue;
+					    }
 						Object parsed = format.parseObject(part.trim());
 						if (parsed instanceof Long) {
 							items.add(((Long) parsed).doubleValue());
