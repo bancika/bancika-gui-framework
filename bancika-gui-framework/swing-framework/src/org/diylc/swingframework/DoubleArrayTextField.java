@@ -3,6 +3,7 @@ package org.diylc.swingframework;
 import java.awt.BorderLayout;
 import java.text.DecimalFormat;
 import java.text.Format;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,33 +96,19 @@ public class DoubleArrayTextField extends JTextField {
 		if (!ignoreChanges) {
 			try {
 				Double[] newValue;
-				if (getText().trim().isEmpty()) {
-					newValue = null;
-				} else {
-					String[] parts = getText().trim().split("/");
-					List<Double> items = new ArrayList<Double>();
-					for (String part : parts) {
-					    if (part.trim().isEmpty()) {
-					      items.add(null);
-					      continue;
-					    }
-						Object parsed = format.parseObject(part.trim());
-						if (parsed instanceof Long) {
-							items.add(((Long) parsed).doubleValue());
-						} else if (parsed instanceof Integer) {
-							items.add(((Integer) parsed).doubleValue());
-						} else if (parsed instanceof Double) {
-							items.add((Double) parsed);
-						} else if (parsed instanceof Float) {
-							items.add(((Float) parsed).doubleValue());
-						} else {
-							throw new RuntimeException(
-									"Unrecognized data type: "
-											+ parsed.getClass().getName());
-						}
-					}
-					newValue = items.toArray(new Double[0]);
+				int index = getText().indexOf("/");
+				int start = 0;
+				List<Double> items = new ArrayList<Double>();
+				while (index >= 0) {
+				    String part = getText().substring(start, index).trim();
+				    items.add(parse(part));
+					start = index + 1;
+					index = getText().indexOf("/", index + 1);
 				}
+				// get the last part
+				String part = getText().substring(start).trim();
+                items.add(parse(part));
+				newValue = items.toArray(new Double[0]);
 				firePropertyChange(VALUE_PROPERTY, this.value, newValue);
 				this.value = newValue;
 				errorLabel.setVisible(false);
@@ -131,5 +118,25 @@ public class DoubleArrayTextField extends JTextField {
 				errorLabel.setVisible(true);
 			}
 		}
+	}
+	
+	private Double parse(String part) throws ParseException {
+	  if (part.isEmpty()) {
+       return null;
+      }
+      Object parsed = format.parseObject(part);
+      if (parsed instanceof Long) {
+          return ((Long) parsed).doubleValue();
+      } else if (parsed instanceof Integer) {
+          return ((Integer) parsed).doubleValue();
+      } else if (parsed instanceof Double) {
+          return (Double) parsed;
+      } else if (parsed instanceof Float) {
+          return ((Float) parsed).doubleValue();
+      } else {
+          throw new RuntimeException(
+                  "Unrecognized data type: "
+                          + parsed.getClass().getName());
+      }
 	}
 }
