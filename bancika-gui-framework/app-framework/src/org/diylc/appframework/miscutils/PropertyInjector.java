@@ -43,31 +43,29 @@ public class PropertyInjector {
 				String fieldName = key.substring(key.lastIndexOf('.') + 1);
 				Class<?> clazz = Class.forName(className);
 				try {
+				    LOG.info("Injecting " + key + " = " + value);
 					Field field = clazz.getField(fieldName);
 					field.setAccessible(true);
 					Class<?> fieldType = field.getType();
 					if (String.class.isAssignableFrom(fieldType)) {
 						field.set(null, value);
-					}
-					if (Integer.class.isAssignableFrom(fieldType)
+					} else if (Integer.class.isAssignableFrom(fieldType)
 							|| int.class.isAssignableFrom(fieldType)) {
 						int intValue = Integer.parseInt(value);
 						field.set(null, intValue);
-					}
-					if (Double.class.isAssignableFrom(fieldType)
+					} else if (Double.class.isAssignableFrom(fieldType)
 							|| double.class.isAssignableFrom(fieldType)) {
 						double doubleValue = Double.parseDouble(value);
 						field.set(null, doubleValue);
-					}
-					if (Boolean.class.isAssignableFrom(fieldType)
+					} else if (Boolean.class.isAssignableFrom(fieldType)
 							|| boolean.class.isAssignableFrom(fieldType)) {
 						boolean booleanValue = Boolean.parseBoolean(value);
 						field.set(null, booleanValue);
-					}
-					if (Color.class.isAssignableFrom(fieldType)) {
+					} else if (Color.class.isAssignableFrom(fieldType)) {
 						Color color = Color.decode(value);
 						field.set(null, color);
-					}
+					} else
+					  LOG.warn("Property type not supported.");
 				} catch (SecurityException e) {
 					LOG.warn("Could not inject " + key + ". Field access denied: " + fieldName);
 				} catch (NoSuchFieldException e) {
