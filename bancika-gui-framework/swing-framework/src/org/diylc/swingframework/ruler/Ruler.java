@@ -5,13 +5,16 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 
 import javax.swing.JComponent;
 
@@ -44,6 +47,9 @@ public class Ruler extends JComponent {
 
 	private Graphics bufferGraphics;
 	private Image bufferImage;
+	
+	private GraphicsConfiguration screenGraphicsConfiguration;
+	public static boolean USE_HARDWARE_ACCELLERATION = false;
 
 	private double zoomLevel = 1d;
 
@@ -68,8 +74,16 @@ public class Ruler extends JComponent {
 
 			@Override
 			public void componentResized(ComponentEvent e) {
-				bufferImage = new BufferedImage(e.getComponent().getWidth(), e
-						.getComponent().getHeight(), BufferedImage.TYPE_INT_RGB);
+			  
+			  if (USE_HARDWARE_ACCELLERATION) {
+			      bufferImage = getScreenGraphicsConfiguration().createCompatibleVolatileImage(e.getComponent().getWidth(), e
+                      .getComponent().getHeight());
+			      ((VolatileImage) bufferImage).validate(screenGraphicsConfiguration);
+			    } else {
+			      bufferImage = createImage(e.getComponent().getWidth(), e
+                      .getComponent().getHeight());
+			    }
+
 				bufferGraphics = bufferImage.getGraphics();
 			}
 		});
@@ -102,6 +116,15 @@ public class Ruler extends JComponent {
 	public void setIndicatorValue(int indicatortValue) {
 		this.indicatorValue = indicatortValue;
 	}
+	
+	private GraphicsConfiguration getScreenGraphicsConfiguration() {
+	  if (screenGraphicsConfiguration == null) {
+	    GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+	    GraphicsDevice[] devices = graphicsEnvironment.getScreenDevices();
+	    screenGraphicsConfiguration = devices[0].getDefaultConfiguration();
+	  }
+      return screenGraphicsConfiguration;
+    }
 
 	private void setIncrementAndUnits() {
 		if (isMetric) {
