@@ -2,8 +2,10 @@ package org.diylc.swingframework.ruler;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -55,6 +57,11 @@ public class RulerScrollPane extends JScrollPane {
   private Corner bottomLeftCorner;
 
   private List<IRulerListener> listeners;
+  
+  // mouse scroll mode
+  private boolean mouseScrollMode = false;
+  private Point mouseScrollPrevLocation = null;
+  private static double MOUSE_SCROLL_SPEED = 0.8;
 
   public RulerScrollPane(Component view) {
     this(view, new ComponentThumbnailProvider(view));
@@ -64,7 +71,7 @@ public class RulerScrollPane extends JScrollPane {
     this(view, provider, 0, 0);
   }
 
-  public RulerScrollPane(Component view, final IDrawingProvider provider, double cmSpacing, double inSpacing) {
+  public RulerScrollPane(final Component view, final IDrawingProvider provider, double cmSpacing, double inSpacing) {
     super(view);
 
     horizontalRuler = new Ruler(Ruler.HORIZONTAL, true, cmSpacing, inSpacing);
@@ -73,6 +80,40 @@ public class RulerScrollPane extends JScrollPane {
     setRowHeaderView(verticalRuler);
 
     listeners = new ArrayList<IRulerListener>();
+    
+    view.addMouseListener(new MouseAdapter() {
+          
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        if (!mouseScrollMode && e.getButton() == MouseEvent.BUTTON2) {
+          mouseScrollPrevLocation = null;
+          mouseScrollMode = true;
+          view.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+          e.consume();
+        } else if (mouseScrollMode) {
+          mouseScrollMode = false;
+          view.setCursor(Cursor.getDefaultCursor());
+          e.consume();
+        }
+      }
+    });
+    
+    view.addMouseMotionListener(new MouseAdapter() {
+
+      @Override
+      public void mouseMoved(MouseEvent e) {
+        if (mouseScrollMode) {
+          if (mouseScrollPrevLocation != null) {
+            int dx = (int) ((e.getPoint().x - mouseScrollPrevLocation.x) * MOUSE_SCROLL_SPEED);
+            int dy = (int) ((e.getPoint().y - mouseScrollPrevLocation.y) * MOUSE_SCROLL_SPEED);
+            getHorizontalScrollBar().setValue(getHorizontalScrollBar().getValue() + dx);
+            getVerticalScrollBar().setValue(getVerticalScrollBar().getValue() + dy);
+          }
+          mouseScrollPrevLocation = e.getPoint();
+          e.consume();
+        }
+      }
+    });
 
     view.addComponentListener(new ComponentAdapter() {
 
@@ -222,6 +263,10 @@ public class RulerScrollPane extends JScrollPane {
     for (IRulerListener listener : listeners) {
       listener.unitsChanged(isMetric);
     }
+  }
+    
+  public boolean isMouseScrollMode() {
+    return mouseScrollMode;
   }
 
   protected void updateRulerSize(int width, int height) {
