@@ -252,6 +252,11 @@ public class RulerScrollPane extends JScrollPane {
     horizontalRuler.setSelectionRect(rect);
     verticalRuler.setSelectionRect(rect);
   }
+  
+  public void setUseHardwareAcceleration(boolean useHardwareAcceleration) {
+    this.horizontalRuler.setUseHardwareAcceleration(useHardwareAcceleration);
+    this.verticalRuler.setUseHardwareAcceleration(useHardwareAcceleration);
+  }
 
   public boolean addUnitListener(IRulerListener e) {
     return listeners.add(e);

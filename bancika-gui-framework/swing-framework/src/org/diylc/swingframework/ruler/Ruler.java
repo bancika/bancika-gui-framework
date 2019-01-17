@@ -49,7 +49,7 @@ public class Ruler extends JComponent {
 	private Image bufferImage;
 	
 	private GraphicsConfiguration screenGraphicsConfiguration;
-	public static boolean USE_HARDWARE_ACCELLERATION = false;
+	public boolean useHardwareAcceleration = false;
 
 	private double zoomLevel = 1d;
 
@@ -74,22 +74,28 @@ public class Ruler extends JComponent {
 
 			@Override
 			public void componentResized(ComponentEvent e) {
-			  
-			  if (USE_HARDWARE_ACCELLERATION) {
-			      bufferImage = getScreenGraphicsConfiguration().createCompatibleVolatileImage(e.getComponent().getWidth(), e
-                      .getComponent().getHeight());
-			      ((VolatileImage) bufferImage).validate(screenGraphicsConfiguration);
-			    } else {
-			      bufferImage = createImage(e.getComponent().getWidth(), e
-                      .getComponent().getHeight());
-			    }
-
-				bufferGraphics = bufferImage.getGraphics();
+			  bufferImage = null;
 			}
 		});
 	}
+	
+	protected void createBufferImage() {
+	  if (useHardwareAcceleration) {
+        bufferImage = getScreenGraphicsConfiguration().createCompatibleVolatileImage(getWidth(), getHeight());
+          ((VolatileImage) bufferImage).validate(screenGraphicsConfiguration);
+        } else {
+          bufferImage = createImage(getWidth(), getHeight());
+        }
 
-	public void setSelectionRect(Rectangle2D selectionRect) {
+        bufferGraphics = bufferImage.getGraphics();    
+	}
+	
+    public void setUseHardwareAcceleration(boolean useHardwareAcceleration) {
+      this.useHardwareAcceleration = useHardwareAcceleration;
+      bufferImage = null;
+    }
+
+    public void setSelectionRect(Rectangle2D selectionRect) {
 		this.selectionRect = selectionRect;
 		repaint();
 	}
@@ -157,14 +163,15 @@ public class Ruler extends JComponent {
 	}
 
 	protected void paintComponent(Graphics g) {
+	    if (bufferImage == null)
+	      createBufferImage();
 		if (bufferGraphics == null) {
 			return;
 		}
 		Rectangle clipRect = g.getClipBounds();
 
 		bufferGraphics.setColor(COLOR);
-		bufferGraphics.fillRect(clipRect.x, clipRect.y, clipRect.width,
-				clipRect.height);
+		bufferGraphics.fillRect(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
 
 		// Do the ruler labels in a small font that's black.
 		bufferGraphics.setFont(new Font("SansSerif", Font.PLAIN, 10));
