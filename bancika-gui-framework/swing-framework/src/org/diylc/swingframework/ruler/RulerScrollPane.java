@@ -25,6 +25,7 @@ import javax.swing.ScrollPaneConstants;
 
 import org.diylc.appframework.images.IconLoader;
 import org.diylc.swingframework.IDrawingProvider;
+import org.diylc.swingframework.images.CursorLoader;
 
 
 /**
@@ -88,7 +89,7 @@ public class RulerScrollPane extends JScrollPane {
         if (!mouseScrollMode && e.getButton() == MouseEvent.BUTTON2) {
           mouseScrollPrevLocation = null;
           mouseScrollMode = true;
-          view.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+          view.setCursor(CursorLoader.ScrollCenter.getCursor());
           e.consume();
         } else if (mouseScrollMode) {
           mouseScrollMode = false;
@@ -105,9 +106,24 @@ public class RulerScrollPane extends JScrollPane {
         if (mouseScrollMode) {
           if (mouseScrollPrevLocation != null) {
             int dx = (int) ((e.getPoint().x - mouseScrollPrevLocation.x) * MOUSE_SCROLL_SPEED);
-            int dy = (int) ((e.getPoint().y - mouseScrollPrevLocation.y) * MOUSE_SCROLL_SPEED);
+            int dy = (int) ((e.getPoint().y - mouseScrollPrevLocation.y) * MOUSE_SCROLL_SPEED);            
             getHorizontalScrollBar().setValue(getHorizontalScrollBar().getValue() + dx);
             getVerticalScrollBar().setValue(getVerticalScrollBar().getValue() + dy);
+            
+            if (Math.abs(dx) > 2 * Math.abs(dy))
+              view.setCursor(dx > 0 ? CursorLoader.ScrollE.getCursor() : CursorLoader.ScrollW.getCursor());
+            else if (Math.abs(dy) > 2 * Math.abs(dx))
+              view.setCursor(dy > 0 ? CursorLoader.ScrollS.getCursor() : CursorLoader.ScrollN.getCursor());
+            else if (dx > 0 && dy > 0)
+              view.setCursor(CursorLoader.ScrollSE.getCursor());
+            else if (dx > 0 && dy < 0)
+              view.setCursor(CursorLoader.ScrollNE.getCursor());
+            else if (dx < 0 && dy < 0)
+              view.setCursor(CursorLoader.ScrollNW.getCursor());
+            else if (dx < 0 && dy > 0)
+              view.setCursor(CursorLoader.ScrollSW.getCursor());
+            else 
+              view.setCursor(CursorLoader.ScrollCenter.getCursor());
           }
           mouseScrollPrevLocation = e.getPoint();
           e.consume();
