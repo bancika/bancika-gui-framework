@@ -122,8 +122,8 @@ public class RulerScrollPane extends JScrollPane {
               view.setCursor(CursorLoader.ScrollNW.getCursor());
             else if (dx < 0 && dy > 0)
               view.setCursor(CursorLoader.ScrollSW.getCursor());
-            else 
-              view.setCursor(CursorLoader.ScrollCenter.getCursor());
+//            else 
+//              view.setCursor(CursorLoader.ScrollCenter.getCursor());
           }
           mouseScrollPrevLocation = e.getPoint();
           e.consume();
