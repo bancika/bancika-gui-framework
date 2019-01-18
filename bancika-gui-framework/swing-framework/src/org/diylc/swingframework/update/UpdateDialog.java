@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 import org.diylc.appframework.miscutils.Utils;
 
 
-class UpdateDialog extends JDialog {
+public class UpdateDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 
@@ -36,7 +36,7 @@ class UpdateDialog extends JDialog {
 		super(SwingUtilities.getWindowAncestor(owner));
 		this.htmlText = htmlText;
 		this.latestVersionUrl = latestVersionUrl;
-		setTitle("Update Details");
+		setTitle(latestVersionUrl == null ? "Version History" : "Update Details");
 
 		setModal(true);
 
@@ -44,46 +44,55 @@ class UpdateDialog extends JDialog {
 		holderPanel.setLayout(new BorderLayout());
 		holderPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
-		holderPanel.add(new JLabel("These updates are available for your computer:"),
+		holderPanel.add(new JLabel(latestVersionUrl == null ? "Most recent updates:" : "These updates are available for your computer:"),
 				BorderLayout.NORTH);
 
-		JScrollPane scrollPane = new JScrollPane(getHtmlLabel());
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		final JScrollPane scrollPane = new JScrollPane(getHtmlLabel());
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);		
 		holderPanel.add(scrollPane, BorderLayout.CENTER);
 		holderPanel.add(createButtonPanel(), BorderLayout.SOUTH);
 
 		setContentPane(holderPanel);
 
-		setPreferredSize(new Dimension(300, 400));
+		setPreferredSize(new Dimension(480, 400));
 
 		pack();
 		setLocationRelativeTo(getOwner());
+		
+		SwingUtilities.invokeLater(new Runnable() {
+		  
+		   public void run() { 
+		     scrollPane.getVerticalScrollBar().setValue(0);
+		   }
+		});
 	}
 
 	private JPanel createButtonPanel() {
 		JPanel buttonPanel = new JPanel(new GridBagLayout());
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
 
-		JButton downloadButton = new JButton("Download");
-		downloadButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					Utils.openURL(latestVersionUrl);
-					UpdateDialog.this.setVisible(false);
-				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(UpdateDialog.this,
-							"Could not launch default browser. To downlaod the latest version visit "
-									+ latestVersionUrl);
-					Logger.getLogger(UpdateDialog.class).error("Could not launch default browser",
-							e1);
-				}
-			}
-		});
-		buttonPanel.add(downloadButton);
-
-		buttonPanel.add(Box.createHorizontalStrut(4));
+		if (latestVersionUrl != null) {
+    		JButton downloadButton = new JButton("Download");
+    		downloadButton.addActionListener(new ActionListener() {
+    
+    			@Override
+    			public void actionPerformed(ActionEvent e) {
+    				try {
+    					Utils.openURL(latestVersionUrl);
+    					UpdateDialog.this.setVisible(false);
+    				} catch (Exception e1) {
+    					JOptionPane.showMessageDialog(UpdateDialog.this,
+    							"Could not launch default browser. To downlaod the latest version visit "
+    									+ latestVersionUrl);
+    					Logger.getLogger(UpdateDialog.class).error("Could not launch default browser",
+    							e1);
+    				}
+    			}
+    		});
+    		buttonPanel.add(downloadButton);
+    
+    		buttonPanel.add(Box.createHorizontalStrut(4));
+		}
 
 		JButton cancelButton = new JButton("Close");
 		cancelButton.addActionListener(new ActionListener() {

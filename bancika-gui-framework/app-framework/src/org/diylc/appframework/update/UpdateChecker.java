@@ -20,7 +20,7 @@ public class UpdateChecker {
   private static final String VERSION_HTML = "<p><b>v%d.%d.%d (released on %s)</b><br>\n%s</p>\n";
   private static final String CHANGE_HTML = "&nbsp;&nbsp;&nbsp;<b>&rsaquo;</b>&nbsp;[%s] %s<br>\n";
   private static final String MAIN_HTML = "<html><font face=\"Tahoma\" size=\"2\">\n%s\n</font></html>";
-  private static final Format dateFormat = new SimpleDateFormat();
+  private static final Format dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
   private VersionNumber currentVersion;
   private String updateFileURL;
@@ -53,13 +53,12 @@ public class UpdateChecker {
     List<Version> versions = findNewVersions();
     if (versions != null && !versions.isEmpty()) {
       Version v = versions.get(0);
-      SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
-      return v.getName() + "v" + v.getVersionNumber() + " released on " + dt.format(v.getReleaseDate());
+      return v.getName() + "v" + v.getVersionNumber() + " released on " + dateFormat.format(v.getReleaseDate());
     }
     return null;
   }
 
-  public String createUpdateHTML(List<Version> versions) {
+  public static String createUpdateHTML(List<Version> versions) {
     if (versions == null) {
       return "Could not obtain update information.";
     }
@@ -78,7 +77,7 @@ public class UpdateChecker {
     return String.format(MAIN_HTML, bodyHtml);
   }
 
-  private String convertChangeTypeToHTML(ChangeType changeType) {
+  private static String convertChangeTypeToHTML(ChangeType changeType) {
     String color;
     switch (changeType) {
       case BUG_FIX:
