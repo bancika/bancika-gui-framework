@@ -30,7 +30,7 @@ public class UpdateLabel extends JLabel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if ((updatedVersions != null) && (updatedVersions.size() > 0)) {
-					new UpdateDialog(UpdateLabel.this, updateChecker
+					new UpdateDialog(UpdateLabel.this, UpdateChecker
 							.createUpdateHTML(updatedVersions), updatedVersions.get(0).getUrl())
 							.setVisible(true);
 				} else {
