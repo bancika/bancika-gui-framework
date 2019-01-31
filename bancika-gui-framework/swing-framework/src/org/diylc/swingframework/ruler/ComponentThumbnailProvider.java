@@ -3,6 +3,7 @@ package org.diylc.swingframework.ruler;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import org.diylc.swingframework.IDrawingProvider;
 
@@ -28,7 +29,8 @@ public class ComponentThumbnailProvider implements IDrawingProvider {
 	}
 
 	@Override
-	public void draw(int page, Graphics g) {
+	public void draw(int page, Graphics g, double zoomFactor) {
+	    ((Graphics2D)g).scale(zoomFactor, zoomFactor);
 		view.paint(g);
 	}
 

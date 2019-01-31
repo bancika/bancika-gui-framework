@@ -29,6 +29,7 @@ public interface IDrawingProvider {
 	 * 
 	 * @param page
 	 * @param g
+	 * @param zoomFactor
 	 */
-	void draw(int page, Graphics g);
+	void draw(int page, Graphics g, double zoomFactor);
 }

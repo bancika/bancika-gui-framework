@@ -111,8 +111,8 @@ public class NavigateDialog extends JDialog {
 			g2d
 					.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 							RenderingHints.VALUE_ANTIALIAS_ON);
-			g2d.scale(scaleRatio, scaleRatio);
-			provider.draw(0, g2d);
+//			g2d.scale(scaleRatio, scaleRatio);
+			provider.draw(0, g2d, scaleRatio);
 			g2d.setTransform(new AffineTransform());
 			g2d.setColor(Color.lightGray);
 			g2d.drawRect(0, 0, width - 1, height - 1);

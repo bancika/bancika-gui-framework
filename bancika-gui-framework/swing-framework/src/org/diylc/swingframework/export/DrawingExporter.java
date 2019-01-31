@@ -109,9 +109,9 @@ public class DrawingExporter {
 								* scale + metrics.getHeight()));
 					}
 
-					g2d.scale(scale, scale);
+//					g2d.scale(scale, scale);
 
-					provider.draw(pageIndex, g2d);
+					provider.draw(pageIndex, g2d, scale);
 
 					return (PAGE_EXISTS);
 				}
@@ -135,7 +135,7 @@ public class DrawingExporter {
 		Dimension d = provider.getSize();
 		// We have to scale everything down because PDF resolution is slightly
 		// lower.
-		float factor = 1f * PDF_RESOLUTION / SCREEN_RESOLUTION;
+		double factor = 1f * PDF_RESOLUTION / SCREEN_RESOLUTION;
 		float totalWidth = (float) (factor * (2 * margin + d.getWidth()));
 		float totalHeight = (float) (factor * (2 * margin + d.getHeight()));
 		Document document = new Document(new com.lowagie.text.Rectangle(
@@ -175,8 +175,8 @@ public class DrawingExporter {
 					totalHeight);
 			Graphics2D g2d = template.createGraphics((float) (factor * d
 					.getWidth()), (float) (factor * d.getHeight()), mapper);
-			g2d.scale(factor, factor);
-			provider.draw(i, g2d);
+//			g2d.scale(factor, factor);
+			provider.draw(i, g2d, factor);
 			contentByte.addTemplate(template, (float) margin, (float) margin);
 			g2d.dispose();
 		}
@@ -202,8 +202,8 @@ public class DrawingExporter {
 						BufferedImage.TYPE_INT_RGB);
 				Graphics2D g2d = (Graphics2D) image.getGraphics();
 
-				g2d.scale(factor, factor);
-				provider.draw(0, g2d);
+//				g2d.scale(factor, factor);
+				provider.draw(0, g2d, factor);
 				g2d.dispose();
 
 				ImageIO.write(image, "PNG", file);
@@ -215,9 +215,9 @@ public class DrawingExporter {
 							BufferedImage.TYPE_INT_RGB);
 					Graphics2D g2d = (Graphics2D) image.getGraphics();
 
-					g2d.scale(factor, factor);
+//					g2d.scale(factor, factor);
 					// Draw a page
-					provider.draw(i, g2d);
+					provider.draw(i, g2d, factor);
 					// Move down
 					g2d.translate(0, (int) (d.getHeight() * factor));
 					g2d.dispose();
