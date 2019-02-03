@@ -3,7 +3,10 @@ package org.diylc.appframework.miscutils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
@@ -34,8 +37,8 @@ public class ConfigurationManager {
 
   private XStream xStream;
   private Map<String, Object> configuration;
-  private Map<String, List<IConfigListener>> listeners;  
-  
+  private Map<String, List<IConfigListener>> listeners;
+
   public static void initialize(String appName) {
     path = Utils.getUserDataDirectory(appName);
   }
@@ -49,7 +52,7 @@ public class ConfigurationManager {
 
   public ConfigurationManager() {
     this.listeners = new HashMap<String, List<IConfigListener>>();
-    this.xStream = new XStream(new DomDriver());    
+    this.xStream = new XStream(new DomDriver());
     xStream.registerConverter(new IconImageConverter());
     initializeConfiguration();
   }
@@ -67,8 +70,8 @@ public class ConfigurationManager {
 
   @SuppressWarnings("unchecked")
   private void initializeConfiguration() {
-    LOG.info("Initializing configuration");    
-    
+    LOG.info("Initializing configuration");
+
     File configFile = new File(path + fileName);
     // if there's no file in the preferred folder, look for it in the app folder
     if (!configFile.exists())
@@ -80,7 +83,33 @@ public class ConfigurationManager {
       in.close();
     } catch (Exception e) {
       LOG.error("Could not initialize configuration", e);
+      // make a backup of the old config file
+      File backupFile = new File(path + fileName + "~");
+      while (backupFile.exists())
+        backupFile = new File(backupFile.getAbsolutePath() + "~");
+      try {
+        copyFileUsingStream(configFile, backupFile);
+      } catch (IOException e1) {
+        LOG.error("Could not create configuration backup", e);
+      }
       configuration = new HashMap<String, Object>();
+    }
+  }
+
+  private static void copyFileUsingStream(File source, File dest) throws IOException {
+    InputStream is = null;
+    OutputStream os = null;
+    try {
+      is = new FileInputStream(source);
+      os = new FileOutputStream(dest);
+      byte[] buffer = new byte[1024];
+      int length;
+      while ((length = is.read(buffer)) > 0) {
+        os.write(buffer, 0, length);
+      }
+    } finally {
+      is.close();
+      os.close();
     }
   }
 
