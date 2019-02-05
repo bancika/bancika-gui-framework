@@ -38,6 +38,8 @@ public class ConfigurationManager {
   private XStream xStream;
   private Map<String, Object> configuration;
   private Map<String, List<IConfigListener>> listeners;
+  
+  private boolean fileWithErrors = false;
 
   public static void initialize(String appName) {
     path = Utils.getUserDataDirectory(appName);
@@ -67,6 +69,10 @@ public class ConfigurationManager {
     }
     listenerList.add(listener);
   }
+  
+  public boolean isFileWithErrors() {
+    return fileWithErrors;
+  }
 
   @SuppressWarnings("unchecked")
   private void initializeConfiguration() {
@@ -84,6 +90,7 @@ public class ConfigurationManager {
     } catch (Exception e) {
       LOG.error("Could not initialize configuration", e);
       // make a backup of the old config file
+      fileWithErrors = true;
       File backupFile = new File(path + fileName + "~");
       while (backupFile.exists())
         backupFile = new File(backupFile.getAbsolutePath() + "~");
