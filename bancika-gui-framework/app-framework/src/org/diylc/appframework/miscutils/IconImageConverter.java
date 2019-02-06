@@ -91,6 +91,7 @@ public class IconImageConverter implements Converter {
 		return new ImageIcon(image);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean canConvert(Class clazz) {
 		return ImageIcon.class.isAssignableFrom(clazz);

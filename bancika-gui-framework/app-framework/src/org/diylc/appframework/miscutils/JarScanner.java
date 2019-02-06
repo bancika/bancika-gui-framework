@@ -46,22 +46,25 @@ public class JarScanner {
 			JarInputStream jarFile = new JarInputStream(
 					new FileInputStream(jar));
 			JarEntry jarEntry;
-
-			while (true) {
-				jarEntry = jarFile.getNextJarEntry();
-				if (jarEntry == null) {
-					break;
-				}
-				if (jarEntry.getName().endsWith(".class")) {
-					String className = jarEntry.getName()
-							.replaceAll("/", "\\.");
-					className = className.substring(0, className
-							.lastIndexOf('.'));
-					if (!className.contains("$")) {
-						LOG.trace("Found " + className);
-						classes.add(className);
-					}
-				}
+			try {
+    			while (true) {
+    				jarEntry = jarFile.getNextJarEntry();
+    				if (jarEntry == null) {
+    					break;
+    				}
+    				if (jarEntry.getName().endsWith(".class")) {
+    					String className = jarEntry.getName()
+    							.replaceAll("/", "\\.");
+    					className = className.substring(0, className
+    							.lastIndexOf('.'));
+    					if (!className.contains("$")) {
+    						LOG.trace("Found " + className);
+    						classes.add(className);
+    					}
+    				}
+    			}
+			} finally {
+			  jarFile.close();
 			}
 		} catch (Exception e) {
 			LOG.error("Error extracting class names from the jar.", e);
