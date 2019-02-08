@@ -12,6 +12,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -256,6 +257,11 @@ public class RulerScrollPane extends JScrollPane {
   public void setUseHardwareAcceleration(boolean useHardwareAcceleration) {
     this.horizontalRuler.setUseHardwareAcceleration(useHardwareAcceleration);
     this.verticalRuler.setUseHardwareAcceleration(useHardwareAcceleration);
+  }
+  
+  public void setZeroLocation(Point2D location) {
+    this.horizontalRuler.setZeroLocation(location.getX());
+    this.verticalRuler.setZeroLocation(location.getY());
   }
 
   public boolean addUnitListener(IRulerListener e) {

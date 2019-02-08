@@ -55,6 +55,8 @@ public class Ruler extends JComponent {
 
 	private double cmSpacing;
 	private double inSpacing;
+	
+	private double zeroLocation = 0;
 
 	private Rectangle2D selectionRect = null;
 
@@ -111,6 +113,11 @@ public class Ruler extends JComponent {
 		setIncrementAndUnits();
 		repaint();
 	}
+	
+	public void setZeroLocation(double zeroLocation) {
+      this.zeroLocation = zeroLocation;
+      repaint();
+    }	
 
 	/**
 	 * Changes cursor position. If less than zero, indication will not be
@@ -176,13 +183,15 @@ public class Ruler extends JComponent {
 		// Do the ruler labels in a small font that's black.
 		bufferGraphics.setFont(new Font("SansSerif", Font.PLAIN, 10));
 		bufferGraphics.setColor(Color.black);
+		
+		double offset = (int) (zeroLocation * unitSize);
 
 		// Some vars we need.
-		float start = 0;
+		double start = 0;
 		int tickLength = 0;
 		String text = null;
 		// int count;
-		float increment = unitSize / ticksPerUnit;
+		double increment = unitSize / ticksPerUnit;
 
 		// Use clipping bounds to calculate first and last tick locations.
 		int firstUnit;
@@ -195,10 +204,12 @@ public class Ruler extends JComponent {
 			start = (int) (clipRect.y / unitSize) * unitSize;
 			// count = Math.round(clipRect.height / increment) + 1;
 		}
+		
+		start += offset;
 
 		// ticks and labels
 		int x = 0;
-		int i = 0;
+		int i = (int) -offset;
 		// System.out.print("start\n");
 		while (x < (orientation == HORIZONTAL ? (clipRect.x + clipRect.width)
 				: (clipRect.y + clipRect.height))) {
