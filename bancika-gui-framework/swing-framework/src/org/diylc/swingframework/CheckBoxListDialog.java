@@ -1,9 +1,11 @@
 package org.diylc.swingframework;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -48,7 +50,8 @@ public class CheckBoxListDialog extends ButtonDialog {
     JScrollPane scrollPane = new JScrollPane(getList());
     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-    return getList();
+    scrollPane.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.gray));
+    return scrollPane;
   }
 
   public Object[] getSelectedOptions() {
