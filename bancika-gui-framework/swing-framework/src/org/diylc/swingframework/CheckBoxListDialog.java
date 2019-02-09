@@ -37,7 +37,7 @@ public class CheckBoxListDialog extends ButtonDialog {
       CheckListItem[] items = new CheckListItem[options.length];
       for (int i = 0; i < options.length; i++) {
         items[i] = new CheckListItem(options[i]);
-        items[i].setSelected(true);
+        items[i].setSelected(false);
       }
       list = new CheckBoxList(items);
     }
