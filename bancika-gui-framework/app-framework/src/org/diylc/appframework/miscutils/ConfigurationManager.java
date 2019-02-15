@@ -91,13 +91,13 @@ public class ConfigurationManager {
       LOG.error("Could not initialize configuration", e);
       // make a backup of the old config file
       fileWithErrors = true;
-      File backupFile = new File(path + fileName + "~");
-      while (backupFile.exists())
-        backupFile = new File(backupFile.getAbsolutePath() + "~");
       try {
+        File backupFile = new File(path + fileName + "~");
+        while (backupFile.exists())
+          backupFile = new File(backupFile.getAbsolutePath() + "~");      
         copyFileUsingStream(configFile, backupFile);
-      } catch (IOException e1) {
-        LOG.error("Could not create configuration backup", e);
+      } catch (Exception e1) {
+        LOG.error("Could not create configuration backup", e1);
       }
       configuration = new HashMap<String, Object>();
     }
