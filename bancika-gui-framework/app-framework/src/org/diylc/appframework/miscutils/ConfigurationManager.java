@@ -80,26 +80,28 @@ public class ConfigurationManager {
 
     File configFile = new File(path + fileName);
     // if there's no file in the preferred folder, look for it in the app folder
-    if (!configFile.exists())
+    if (!configFile.exists()) {
       configFile = new File(fileName);
-    try {
-      FileInputStream in = new FileInputStream(configFile);
-      Reader reader = new InputStreamReader(in, "UTF-8");
-      configuration = (Map<String, Object>) xStream.fromXML(reader);
-      in.close();
-    } catch (Exception e) {
-      LOG.error("Could not initialize configuration", e);
-      // make a backup of the old config file
-      fileWithErrors = true;
+    } else {
       try {
-        File backupFile = new File(path + fileName + "~");
-        while (backupFile.exists())
-          backupFile = new File(backupFile.getAbsolutePath() + "~");      
-        copyFileUsingStream(configFile, backupFile);
-      } catch (Exception e1) {
-        LOG.error("Could not create configuration backup", e1);
+        FileInputStream in = new FileInputStream(configFile);
+        Reader reader = new InputStreamReader(in, "UTF-8");
+        configuration = (Map<String, Object>) xStream.fromXML(reader);
+        in.close();
+      } catch (Exception e) {
+        LOG.error("Could not initialize configuration", e);
+        // make a backup of the old config file
+        fileWithErrors = true;
+        configuration = new HashMap<String, Object>();
+        try {
+          File backupFile = new File(path + fileName + "~");
+          while (backupFile.exists())
+            backupFile = new File(backupFile.getAbsolutePath() + "~");
+          copyFileUsingStream(configFile, backupFile);
+        } catch (Exception e1) {
+          LOG.error("Could not create configuration backup", e1);
+        }        
       }
-      configuration = new HashMap<String, Object>();
     }
   }
 
