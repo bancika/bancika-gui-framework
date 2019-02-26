@@ -62,19 +62,19 @@ public class NewLogForEachRunFileAppender extends FileAppender {
         // the file name has no extension. So, just append the timestamp
         // at the end.
         newFileName = fileName + HIPHEN + df.format(new java.util.Date());
-      }
-      if (logFile.getParent() != null) {
+      }      
+      if (logFile.getParentFile().exists()) {
         if (deleteOlderThan > 0) {
           for (File f : logFile.getParentFile().listFiles()) {
             double age = System.currentTimeMillis() - f.lastModified();
             if (age > deleteOlderThan)
               f.delete();
           }
-        }
-        toret = logFile.getParent() + File.separator + newFileName;
+        }        
       } else {
-        toret = newFileName;
+        logFile.getParentFile().mkdirs();        
       }
+      toret = logFile.getParent() + File.separator + newFileName;
       return toret;// .replaceAll(":", ".");
     }
     return null;

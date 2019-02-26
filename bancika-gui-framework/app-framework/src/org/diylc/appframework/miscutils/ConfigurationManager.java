@@ -82,6 +82,7 @@ public class ConfigurationManager {
     // if there's no file in the preferred folder, look for it in the app folder
     if (!configFile.exists()) {
       configFile = new File(fileName);
+      configuration = new HashMap<String, Object>();
     } else {
       try {
         FileInputStream in = new FileInputStream(configFile);
