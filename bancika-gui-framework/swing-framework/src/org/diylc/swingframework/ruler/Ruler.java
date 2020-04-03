@@ -37,6 +37,7 @@ public class Ruler extends JComponent {
 	public static final int HORIZONTAL = 0;
 	public static final int VERTICAL = 1;
 	public static final int SIZE = 18;
+	public static final int MIN_TICK_SPACING = 8;
 
 	public int orientation;
 	private boolean isMetric;
@@ -57,19 +58,27 @@ public class Ruler extends JComponent {
 	private double inSpacing;
 	
 	private double zeroLocation = 0;
+	
+	private InchSubdivision inSubdivision;
 
 	private Rectangle2D selectionRect = null;
 
 	public Ruler(int orientation, boolean isMetric) {
 		this(orientation, isMetric, 0, 0);
 	}
+	
+	public Ruler(int orientation, boolean isMetric, double cmSpacing,
+        double inSpacing) {
+	  this(orientation, isMetric, cmSpacing, inSpacing, InchSubdivision.In10);
+	}
 
 	public Ruler(int orientation, boolean isMetric, double cmSpacing,
-			double inSpacing) {
+			double inSpacing, InchSubdivision inSubdivision) {
 		this.orientation = orientation;
 		this.isMetric = isMetric;
 		this.cmSpacing = cmSpacing;
 		this.inSpacing = inSpacing;
+		this.inSubdivision = inSubdivision;
 		setIncrementAndUnits();
 
 		addComponentListener(new ComponentAdapter() {
@@ -118,6 +127,15 @@ public class Ruler extends JComponent {
       this.zeroLocation = zeroLocation;
       repaint();
     }	
+	
+	public InchSubdivision getInSubdivision() {
+		return inSubdivision;
+	}
+	
+	public void setInSubdivision(InchSubdivision inSubdivision) {
+		this.inSubdivision = inSubdivision;
+		repaint();
+	}
 
 	/**
 	 * Changes cursor position. If less than zero, indication will not be
@@ -143,11 +161,16 @@ public class Ruler extends JComponent {
 		if (isMetric) {
 			unitSize = (float) ((cmSpacing == 0 ? PIXELS_PER_INCH / 2.54f
 					: cmSpacing) * zoomLevel);
-			ticksPerUnit = 4;
+			if (unitSize > 10 * MIN_TICK_SPACING)
+			  ticksPerUnit = 10;
+			else
+			  ticksPerUnit = 4;
 		} else {
-			ticksPerUnit = 10;
+			ticksPerUnit = inSubdivision == InchSubdivision.In10 ? 10 : 16;
 			unitSize = (float) ((inSpacing == 0 ? (PIXELS_PER_INCH) : inSpacing) * zoomLevel);
 		}
+		while (unitSize / ticksPerUnit < MIN_TICK_SPACING && ticksPerUnit % 2 == 0)
+		  ticksPerUnit /= 2;
 		// ticksPerUnit = 1;
 		// while (unitSize / ticksPerUnit > 48) {
 		// ticksPerUnit *= 2;
@@ -221,10 +244,46 @@ public class Ruler extends JComponent {
 				// firstUnit, ticksPerUnit, i, text);
 			} else {
 				tickLength = 7;
+				int j = i % Math.round(ticksPerUnit);
+                while (j < 0)
+                  j += ticksPerUnit;
 				if (isMetric) {
-					tickLength -= 2 * (i % Math.round(ticksPerUnit) % 2);
-				} else if (i % Math.round(ticksPerUnit) != 5) {
-					tickLength -= 2;
+  				  if (ticksPerUnit == 10) {
+  					  if (j != 5)
+  						  tickLength -= 2;
+  				  } else { // 4
+  					if (j != 2) {					
+						tickLength -= 2;
+  					}
+  				  }
+				} else {
+					if (Math.round(ticksPerUnit) % 2 == 1) { // 10
+						if (i % Math.round(ticksPerUnit) != Math.round(ticksPerUnit / 2)) {					
+							tickLength -= 2;
+						}
+					} else {
+						int pow = (int) Math.round(Math.log(ticksPerUnit) / Math.log(2));
+
+						if (pow == 2) {
+							if (j != 2) {					
+								tickLength -= 2;
+							}
+						} else if (pow == 3) {
+							if (j != 4) {					
+								tickLength -= 2;
+							}
+							if (j != 2 && j != 4 && j != 6) {                   
+                              tickLength -= 2;
+                          }
+						} else if (pow == 4) {
+							if (j != 8) {					
+								tickLength -= 2;
+							}
+							if (j != 4 && j != 8 && j != 12) {					
+								tickLength -= 2;
+							}
+						}
+					}					
 				}
 				text = null;
 			}
@@ -307,5 +366,9 @@ public class Ruler extends JComponent {
 	@Override
 	public void update(Graphics g) {
 		paint(g);
+	}
+	
+	public enum InchSubdivision {
+	  In10, In16,
 	}
 }

@@ -27,6 +27,7 @@ import javax.swing.ScrollPaneConstants;
 import org.diylc.appframework.images.IconLoader;
 import org.diylc.swingframework.IDrawingProvider;
 import org.diylc.swingframework.images.CursorLoader;
+import org.diylc.swingframework.ruler.Ruler.InchSubdivision;
 
 
 /**
@@ -72,12 +73,16 @@ public class RulerScrollPane extends JScrollPane {
   public RulerScrollPane(Component view, final IDrawingProvider provider) {
     this(view, provider, 0, 0);
   }
-
+  
   public RulerScrollPane(final Component view, final IDrawingProvider provider, double cmSpacing, double inSpacing) {
+    this(view, provider, cmSpacing, inSpacing, InchSubdivision.In10);
+  }
+
+  public RulerScrollPane(final Component view, final IDrawingProvider provider, double cmSpacing, double inSpacing, InchSubdivision inSubdivision) {
     super(view);
 
-    horizontalRuler = new Ruler(Ruler.HORIZONTAL, true, cmSpacing, inSpacing);
-    verticalRuler = new Ruler(Ruler.VERTICAL, true, cmSpacing, inSpacing);
+    horizontalRuler = new Ruler(Ruler.HORIZONTAL, true, cmSpacing, inSpacing, inSubdivision);
+    verticalRuler = new Ruler(Ruler.VERTICAL, true, cmSpacing, inSpacing, inSubdivision);
     setColumnHeaderView(horizontalRuler);
     setRowHeaderView(verticalRuler);
 
@@ -290,6 +295,11 @@ public class RulerScrollPane extends JScrollPane {
     for (IRulerListener listener : listeners) {
       listener.unitsChanged(isMetric);
     }
+  }
+  
+  public void setInSubdivision(InchSubdivision inSubdivision) {
+	  horizontalRuler.setInSubdivision(inSubdivision);
+	  verticalRuler.setInSubdivision(inSubdivision);
   }
     
   public boolean isMouseScrollMode() {
