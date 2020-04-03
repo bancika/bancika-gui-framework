@@ -69,7 +69,7 @@ public class Ruler extends JComponent {
 	
 	public Ruler(int orientation, boolean isMetric, double cmSpacing,
         double inSpacing) {
-	  this(orientation, isMetric, cmSpacing, inSpacing, InchSubdivision.In10);
+	  this(orientation, isMetric, cmSpacing, inSpacing, InchSubdivision.BASE_10);
 	}
 
 	public Ruler(int orientation, boolean isMetric, double cmSpacing,
@@ -134,6 +134,7 @@ public class Ruler extends JComponent {
 	
 	public void setInSubdivision(InchSubdivision inSubdivision) {
 		this.inSubdivision = inSubdivision;
+		setIncrementAndUnits();
 		repaint();
 	}
 
@@ -166,7 +167,7 @@ public class Ruler extends JComponent {
 			else
 			  ticksPerUnit = 4;
 		} else {
-			ticksPerUnit = inSubdivision == InchSubdivision.In10 ? 10 : 16;
+			ticksPerUnit = inSubdivision == InchSubdivision.BASE_10 ? 10 : 16;
 			unitSize = (float) ((inSpacing == 0 ? (PIXELS_PER_INCH) : inSpacing) * zoomLevel);
 		}
 		while (unitSize / ticksPerUnit < MIN_TICK_SPACING && ticksPerUnit % 2 == 0)
@@ -257,8 +258,8 @@ public class Ruler extends JComponent {
   					}
   				  }
 				} else {
-					if (Math.round(ticksPerUnit) % 2 == 1) { // 10
-						if (i % Math.round(ticksPerUnit) != Math.round(ticksPerUnit / 2)) {					
+					if (Math.round(ticksPerUnit) == 10) { // 10
+						if (j != 5) {					
 							tickLength -= 2;
 						}
 					} else {
@@ -369,6 +370,6 @@ public class Ruler extends JComponent {
 	}
 	
 	public enum InchSubdivision {
-	  In10, In16,
+	  BASE_10, BASE_2,
 	}
 }
