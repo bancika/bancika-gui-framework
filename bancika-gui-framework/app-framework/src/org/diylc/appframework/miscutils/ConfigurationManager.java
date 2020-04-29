@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  * 
  * @author Branislav Stojkovic
  */
-public class ConfigurationManager {
+public class ConfigurationManager implements IConfigurationManager {
 
   private static final Logger LOG = Logger.getLogger(ConfigurationManager.class);
 

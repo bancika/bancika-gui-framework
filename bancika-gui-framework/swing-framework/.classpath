@@ -8,6 +8,6 @@
 	<classpathentry kind="lib" path="lib/iText-2.1.7.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/app-framework"/>
 	<classpathentry kind="lib" path="lib/xstream-1.4.3.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_45"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
