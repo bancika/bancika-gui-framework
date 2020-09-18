@@ -27,23 +27,19 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  * 
  * @author Branislav Stojkovic
  */
-public class ConfigurationManager implements IConfigurationManager {
+public class ConfigurationManager implements IConfigurationManager<XStream> {
 
   private static final Logger LOG = Logger.getLogger(ConfigurationManager.class);
 
-  private static ConfigurationManager instance;
-  private static String path = Utils.getUserDataDirectory("generic");
+  private static ConfigurationManager instance;  
   private static final String fileName = "config.xml";
 
   private XStream xStream;
   private Map<String, Object> configuration;
   private Map<String, List<IConfigListener>> listeners;
+  private String path = Utils.getUserDataDirectory("generic");
   
   private boolean fileWithErrors = false;
-
-  public static void initialize(String appName) {
-    path = Utils.getUserDataDirectory(appName);
-  }
 
   public static ConfigurationManager getInstance() {
     if (instance == null) {
@@ -56,7 +52,6 @@ public class ConfigurationManager implements IConfigurationManager {
     this.listeners = new HashMap<String, List<IConfigListener>>();
     this.xStream = new XStream(new DomDriver());
     xStream.registerConverter(new IconImageConverter());
-    initializeConfiguration();
   }
 
   public void addConfigListener(String key, IConfigListener listener) {
@@ -74,9 +69,11 @@ public class ConfigurationManager implements IConfigurationManager {
     return fileWithErrors;
   }
 
-  @SuppressWarnings("unchecked")
-  private void initializeConfiguration() {
-    LOG.info("Initializing configuration");
+  @SuppressWarnings("unchecked")  
+  public void initialize(String appName) {
+    LOG.info("Initializing configuration for: " + appName);
+    
+    this.path = Utils.getUserDataDirectory(appName);
 
     File configFile = new File(path + fileName);
     // if there's no file in the preferred folder, look for it in the app folder
@@ -194,5 +191,10 @@ public class ConfigurationManager implements IConfigurationManager {
         listener.valueChanged(key, value);
       }
     }
+  }
+  
+  @Override
+  public XStream getSerializer() {   
+    return this.xStream;
   }
 }

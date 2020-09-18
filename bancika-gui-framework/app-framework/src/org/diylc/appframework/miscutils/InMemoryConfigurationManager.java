@@ -6,19 +6,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Utility that keeps configuration in memory without persistance. Each configuration item should have a
- * unique name. To write to the configuration use {@link #writeValue(String, Object)}. Use
+ * Utility that keeps configuration in memory without persistance. Each configuration item should
+ * have a unique name. To write to the configuration use {@link #writeValue(String, Object)}. Use
  * <code>readXYZ</code> methods where XYZ stands for specific data types.
  * 
  * @author Branislav Stojkovic
  */
-public class InMemoryConfigurationManager implements IConfigurationManager {
+public class InMemoryConfigurationManager implements IConfigurationManager<Void> {
 
   private static InMemoryConfigurationManager instance;
 
   private Map<String, Object> configuration;
   private Map<String, List<IConfigListener>> listeners;
- 
+
   public static InMemoryConfigurationManager getInstance() {
     if (instance == null) {
       instance = new InMemoryConfigurationManager();
@@ -30,7 +30,7 @@ public class InMemoryConfigurationManager implements IConfigurationManager {
     this.listeners = new HashMap<String, List<IConfigListener>>();
     this.configuration = new HashMap<String, Object>();
   }
-  
+
   public InMemoryConfigurationManager(Map<String, Object> configuration) {
     this.listeners = new HashMap<String, List<IConfigListener>>();
     this.configuration = configuration;
@@ -102,5 +102,15 @@ public class InMemoryConfigurationManager implements IConfigurationManager {
         listener.valueChanged(key, value);
       }
     }
+  }
+
+  @Override
+  public Void getSerializer() {
+    return null;
+  }
+
+  @Override
+  public void initialize(String appName) {
+    // do nothing
   }
 }

@@ -1,6 +1,6 @@
 package org.diylc.appframework.miscutils;
 
-public interface IConfigurationManager {
+public interface IConfigurationManager<T> {
   
   void addConfigListener(String key, IConfigListener listener);
 
@@ -17,4 +17,8 @@ public interface IConfigurationManager {
   Object readObject(String key, Object defaultValue);
 
   void writeValue(String key, Object value);
+  
+  T getSerializer();
+  
+  void initialize(String appName);
 }
