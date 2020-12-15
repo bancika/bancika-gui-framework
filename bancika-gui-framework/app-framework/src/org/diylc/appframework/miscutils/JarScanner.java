@@ -141,6 +141,7 @@ public class JarScanner {
 						LOG.warn("Could not load: " + className);
 					}
 				}
+				clazzLoader.close();
 			} catch (Exception e) {
 				LOG.warn("Could not add JAR to the classpath.", e);
 			}
