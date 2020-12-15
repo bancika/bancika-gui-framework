@@ -82,8 +82,12 @@ public class JarScanner {
 	 * @return
 	 */
 	public List<File> getJarFiles(File folder, boolean recursive) {
+	    List<File> jarFiles = new ArrayList<File>();
+	    if (folder == null)
+	      return jarFiles;
 		File[] listOfFiles = folder.listFiles();
-		List<File> jarFiles = new ArrayList<File>();
+		if (listOfFiles == null)
+		  return jarFiles;
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
 				if (listOfFiles[i].getName().toLowerCase().endsWith(".jar")) {
