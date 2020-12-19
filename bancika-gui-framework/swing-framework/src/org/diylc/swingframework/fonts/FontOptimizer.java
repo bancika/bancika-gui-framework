@@ -19,7 +19,7 @@ import org.diylc.appframework.miscutils.IConfigurationManager;
 
 /***
  * Analyzes installed fonts and looks for ones that are slow to render. Those are kept in
- * {@link #longRunningFonts} collection.
+ * {@link #slowFonts} collection.
  * 
  * @author bancika
  *
@@ -28,15 +28,15 @@ public class FontOptimizer {
 
   private static final Logger LOG = Logger.getLogger(FontOptimizer.class);
 
-  private static Set<String> longRunningFonts = new HashSet<String>();
+  private static Set<String> slowFonts = new HashSet<String>();
   private static Object mutex = new Object();
 
   private static final int TIMEOUT = 25;
-  private static final String CONFIG_KEY = "FontOptimizer.longRunningFonts";
+  private static final String CONFIG_KEY = "FontOptimizer.slowFonts";
 
-  public static Set<String> getLongRunningFonts() {
+  public static Set<String> getSlowFonts() {
     synchronized (mutex) {
-      return new HashSet<String>(longRunningFonts);
+      return new HashSet<String>(slowFonts);
     }
   }
 
@@ -49,7 +49,7 @@ public class FontOptimizer {
 
     try {
       synchronized (mutex) {
-        longRunningFonts =
+        slowFonts =
             new HashSet<String>((Set<String>) configManager.readObject(CONFIG_KEY, new HashSet<String>()));
       }
     } catch (Exception e) {
@@ -101,16 +101,16 @@ public class FontOptimizer {
       Long time = System.currentTimeMillis() - now;
       if (time > TIMEOUT)
         synchronized (mutex) {
-          longRunningFonts.add(fontName);
+          slowFonts.add(fontName);
         }
 
       now = System.currentTimeMillis();
     }
     LOG.info("Font optimization completed in " + (System.currentTimeMillis() - start) + "ms. Found "
-        + longRunningFonts.size() + " slow fonts");
-    if (longRunningFonts.size() > 0)
-      LOG.debug("Slow fonts: " + String.join(",", longRunningFonts));
+        + slowFonts.size() + " slow fonts");
+    if (slowFonts.size() > 0)
+      LOG.debug("Slow fonts: " + String.join(",", slowFonts));
     
-    ConfigurationManager.getInstance().writeValue(CONFIG_KEY, longRunningFonts);
+    ConfigurationManager.getInstance().writeValue(CONFIG_KEY, slowFonts);
   }
 }

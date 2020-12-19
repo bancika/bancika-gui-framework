@@ -350,7 +350,7 @@ public class FontChooserComboBox extends JComboBox implements ItemListener {
         this.add(labelHelp);
 
         // preview string in this font only if the font is not identified by FontOptimizer as a slow one
-        if (previewString != null && !FontOptimizer.getLongRunningFonts().contains(fontName)) {
+        if (previewString != null && !FontOptimizer.getSlowFonts().contains(fontName)) {
           // show only supported characters
           StringBuilder thisPreview = new StringBuilder();
           for (int i = 0; i < previewString.length(); i++) {
