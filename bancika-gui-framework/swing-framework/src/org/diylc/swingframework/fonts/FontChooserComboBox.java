@@ -1,4 +1,4 @@
-package org.diylc.swingframework;
+package org.diylc.swingframework.fonts;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -349,8 +349,8 @@ public class FontChooserComboBox extends JComboBox implements ItemListener {
         JLabel labelHelp = new JLabel(font.getName());
         this.add(labelHelp);
 
-        // preview string in this font
-        if (previewString != null) {
+        // preview string in this font only if the font is not identified by FontOptimizer as a slow one
+        if (previewString != null && !FontOptimizer.getLongRunningFonts().contains(fontName)) {
           // show only supported characters
           StringBuilder thisPreview = new StringBuilder();
           for (int i = 0; i < previewString.length(); i++) {
