@@ -208,6 +208,6 @@ public class Utils {
   }
 
   public static String getUserDataDirectory(String appName) {
-    return System.getProperty("user.home") + File.separator + "." + appName + File.separator;
+    return System.getProperty("user.home") + File.separator + appName + File.separator;
   }
 }
