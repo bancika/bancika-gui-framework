@@ -37,9 +37,11 @@ class DropDownButton extends JButton {
   private static final String ICON_ROLLOVER_SELECTED_LINE = "rolloverSelectedLine";
   private PopupMenuListener menuListener;
 
-  public DropDownButton(Icon icon, JPopupMenu popup) {
+  public DropDownButton(String text, Icon icon, JPopupMenu popup) {
     Parameters.notNull((CharSequence) "icon", (Object) icon);
     assert (null != icon);
+    if (text != null)
+      setText(text);
     this.putClientProperty("dropDownMenu", popup);
     this.setIcon(icon);
     this.setDisabledIcon(ImageUtilities.createDisabledIcon((Icon) icon));
@@ -114,6 +116,7 @@ class DropDownButton extends JButton {
         }
       }
     });
+    this.updateUI();
     this.setModel(new Model());
   }
 
@@ -282,13 +285,13 @@ class DropDownButton extends JButton {
     super.setDisabledSelectedIcon(this.hasPopupMenu() ? arrow : icon);
   }
 
-  @Override
-  public void setText(String text) {}
-
-  @Override
-  public String getText() {
-    return null;
-  }
+//  @Override
+//  public void setText(String text) {}
+//
+//  @Override
+//  public String getText() {
+//    return null;
+//  }
 
   private class Model extends DefaultButtonModel {
 
