@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.security.AnyTypePermission;
 
 /**
  * Utility that reads and writes configuration to an XML file. Each configuration item should have a
@@ -52,6 +53,7 @@ public class ConfigurationManager implements IConfigurationManager<XStream> {
     this.listeners = new HashMap<String, List<IConfigListener>>();
     this.xStream = new XStream(new DomDriver());
     xStream.registerConverter(new IconImageConverter());
+    xStream.addPermission(AnyTypePermission.ANY);
   }
 
   public void addConfigListener(String key, IConfigListener listener) {

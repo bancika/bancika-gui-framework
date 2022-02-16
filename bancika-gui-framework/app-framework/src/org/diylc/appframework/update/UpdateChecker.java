@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.security.AnyTypePermission;
 
 public class UpdateChecker {
 
@@ -36,6 +37,7 @@ public class UpdateChecker {
     LOG.info("Trying to download file: " + updateFileURL);
     BufferedInputStream in = new BufferedInputStream(new URL(updateFileURL).openStream());
     XStream xStream = new XStream(new DomDriver());
+    xStream.addPermission(AnyTypePermission.ANY);
     List<Version> allVersions = (List<Version>) xStream.fromXML(in);
     in.close();
     List<Version> filteredVersions = new ArrayList<Version>();
