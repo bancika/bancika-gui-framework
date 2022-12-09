@@ -207,7 +207,10 @@ public class TableExporter {
 							value, false, false, rowIdx, columnIdx);
 					try {
 						Method method = rendererComponent.getClass().getMethod("getText");
-						out.write(method.invoke(rendererComponent).toString());
+						String text = method.invoke(rendererComponent).toString();
+						if (text.contains(","))
+						  text = "\"" + text + "\"";
+                        out.write(text);
 					} catch (Exception e) {
 					}
 				}
