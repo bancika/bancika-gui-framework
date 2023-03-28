@@ -10,6 +10,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,9 +97,13 @@ public class ConfigurationManager implements IConfigurationManager<XStream> {
         fileWithErrors = true;
         configuration = new HashMap<String, Object>();
         try {
-          File backupFile = new File(path + fileName + "~");
-          while (backupFile.exists())
+          File backupFile = new File(path + fileName + "." + LocalDateTime.now()
+              .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+              .substring(0, 19)
+              .replace(':', '-'));
+          while (backupFile.exists()) { // just in case
             backupFile = new File(backupFile.getAbsolutePath() + "~");
+          }
           copyFileUsingStream(configFile, backupFile);
         } catch (Exception e1) {
           LOG.error("Could not create configuration backup", e1);
@@ -128,10 +135,21 @@ public class ConfigurationManager implements IConfigurationManager<XStream> {
     File configFile = new File(path + fileName);
     new File(path).mkdirs();
     try {
-      FileOutputStream out = new FileOutputStream(configFile);
+      String tempFileName = configFile + ".temp";
+      FileOutputStream out = new FileOutputStream(tempFileName);
       Writer writer = new OutputStreamWriter(out, "UTF-8");
       xStream.toXML(configuration, writer);
       out.close();
+      
+      if (configFile.exists()) {
+        File backupFile = new File(path + File.separator + "backup" + File.separator + fileName + "." + LocalDate.now()
+          .format(DateTimeFormatter.ISO_LOCAL_DATE));
+        if (!backupFile.exists()) {
+          configFile.renameTo(backupFile);
+        }
+        configFile.delete();
+      }
+      new File(tempFileName).renameTo(configFile);
     } catch (Exception e) {
       LOG.error("Could not save configuration: " + e.getMessage());
     }
