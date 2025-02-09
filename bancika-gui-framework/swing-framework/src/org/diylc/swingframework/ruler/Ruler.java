@@ -15,7 +15,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.VolatileImage;
-
+import java.util.Objects;
 import javax.swing.JComponent;
 
 /**
@@ -107,8 +107,11 @@ public class Ruler extends JComponent {
     }
 
     public void setSelectionRect(Rectangle2D selectionRect) {
-		this.selectionRect = selectionRect;
-		repaint();
+      if (!Objects.equals(selectionRect, this.selectionRect)) {
+        return;
+      }
+      this.selectionRect = selectionRect;
+      repaint();
 	}
 
 	public void setZoomLevel(double zoomLevel) {

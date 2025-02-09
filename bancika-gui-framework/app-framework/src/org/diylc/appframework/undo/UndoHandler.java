@@ -26,7 +26,7 @@ public class UndoHandler<T> {
 
   private static final Logger LOG = Logger.getLogger(UndoHandler.class);
 
-  public static final int MAX_STACK_SIZE = 32;
+  public static final int MAX_STACK_SIZE = 128;
 
   private Stack<Change> undoStack;
   private Stack<Change> redoStack;
