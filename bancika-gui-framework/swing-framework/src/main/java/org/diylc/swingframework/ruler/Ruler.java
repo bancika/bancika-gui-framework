@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -91,11 +92,14 @@ public class Ruler extends JComponent {
 	}
 	
 	protected void createBufferImage() {
+	  Rectangle visibleRect = this.getVisibleRect();
 	  if (useHardwareAcceleration) {
-        bufferImage = getScreenGraphicsConfiguration().createCompatibleVolatileImage(getWidth(), getHeight());
+        bufferImage = getScreenGraphicsConfiguration().createCompatibleVolatileImage((int)visibleRect.getWidth(), 
+            (int)visibleRect.getHeight());
           ((VolatileImage) bufferImage).validate(screenGraphicsConfiguration);
         } else {
-          bufferImage = createImage(getWidth(), getHeight());
+          bufferImage = createImage((int)visibleRect.getWidth(), 
+              (int)visibleRect.getHeight());
         }
 
         bufferGraphics = bufferImage.getGraphics();    
@@ -202,6 +206,12 @@ public class Ruler extends JComponent {
 		if (bufferGraphics == null) {
 			return;
 		}
+		
+		Graphics2D g2d = (Graphics2D) g;
+		Rectangle visibleRect = this.getVisibleRect();
+	    g2d.translate(-visibleRect.x, -visibleRect.y);
+	    g2d.setClip(visibleRect);
+	    
 		Rectangle clipRect = g.getClipBounds();
 
 		bufferGraphics.setColor(COLOR);
