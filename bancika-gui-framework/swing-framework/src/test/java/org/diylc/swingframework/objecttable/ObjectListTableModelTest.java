@@ -10,7 +10,7 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
-import test.java.org.diylc.swingframework.objecttable.ObjectListTableModel;
+import org.diylc.swingframework.objecttable.ObjectListTableModel;
 
 public class ObjectListTableModelTest {
 

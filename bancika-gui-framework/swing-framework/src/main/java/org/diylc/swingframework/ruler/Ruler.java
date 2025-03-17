@@ -27,6 +27,7 @@ import javax.swing.JComponent;
 public class Ruler extends JComponent {
 
 	private static final long serialVersionUID = 1L;
+	private static final long REPAINT_THROTTLE_MS = 100; // 10 repaints per second
 
 	public static final Color COLOR = Color.decode("#C0FF3E");
 	public static final Color SELECTION_COLOR = Color.red;
@@ -45,6 +46,7 @@ public class Ruler extends JComponent {
 	private float unitSize;
 	private int indicatorValue = -1;
 	private float ticksPerUnit;
+	private long lastRepaintTime = 0;
 
 	private Graphics bufferGraphics;
 	private Image bufferImage;
@@ -107,28 +109,37 @@ public class Ruler extends JComponent {
     }
 
     public void setSelectionRect(Rectangle2D selectionRect) {
-      if (!Objects.equals(selectionRect, this.selectionRect)) {
+      if (Objects.equals(selectionRect, this.selectionRect)) {
         return;
       }
       this.selectionRect = selectionRect;
-      repaint();
-	}
+      throttledRepaint();
+    }
 
 	public void setZoomLevel(double zoomLevel) {
+		if (this.zoomLevel == zoomLevel) {
+			return;
+		}
 		this.zoomLevel = zoomLevel;
 		setIncrementAndUnits();
-		repaint();
+		throttledRepaint();
 	}
 
 	public void setIsMetric(boolean isMetric) {
+		if (this.isMetric == isMetric) {
+			return;
+		}
 		this.isMetric = isMetric;
 		setIncrementAndUnits();
-		repaint();
+		throttledRepaint();
 	}
 	
 	public void setZeroLocation(double zeroLocation) {
-      this.zeroLocation = zeroLocation;
-      repaint();
+		if (this.zeroLocation == zeroLocation) {
+			return;
+		}
+		this.zeroLocation = zeroLocation;
+		throttledRepaint();
     }	
 	
 	public InchSubdivision getInSubdivision() {
@@ -136,9 +147,12 @@ public class Ruler extends JComponent {
 	}
 	
 	public void setInSubdivision(InchSubdivision inSubdivision) {
+		if (this.inSubdivision == inSubdivision) {
+			return;
+		}
 		this.inSubdivision = inSubdivision;
 		setIncrementAndUnits();
-		repaint();
+		throttledRepaint();
 	}
 
 	/**
@@ -149,7 +163,11 @@ public class Ruler extends JComponent {
 	 * @param indicatortValue
 	 */
 	public void setIndicatorValue(int indicatortValue) {
+		if (this.indicatorValue == indicatortValue) {
+			return;
+		}
 		this.indicatorValue = indicatortValue;
+		throttledRepaint();
 	}
 	
 	private GraphicsConfiguration getScreenGraphicsConfiguration() {
@@ -374,5 +392,23 @@ public class Ruler extends JComponent {
 	
 	public enum InchSubdivision {
 	  BASE_10, BASE_2,
+	}
+
+	private void throttledRepaint() {
+		long currentTime = System.currentTimeMillis();
+		if (currentTime - lastRepaintTime >= REPAINT_THROTTLE_MS) {
+			repaint();
+			lastRepaintTime = currentTime;
+		} else {
+			// Schedule another repaint after the throttling period to ensure we show the latest value
+			javax.swing.Timer timer = new javax.swing.Timer((int)(REPAINT_THROTTLE_MS - (currentTime - lastRepaintTime)), null);
+			timer.addActionListener(e -> {
+				repaint();
+				lastRepaintTime = System.currentTimeMillis();
+				timer.stop();
+			});
+			timer.setRepeats(false);
+			timer.start();
+		}
 	}
 }
