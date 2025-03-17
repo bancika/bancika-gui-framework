@@ -25,7 +25,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 
-import org.diylc.swingframework.IDrawingProvider;
+import test.java.org.diylc.swingframework.IDrawingProvider;
 
 
 /**
