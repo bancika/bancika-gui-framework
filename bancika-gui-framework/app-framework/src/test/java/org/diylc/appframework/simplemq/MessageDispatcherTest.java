@@ -19,7 +19,7 @@ public class MessageDispatcherTest {
 
 	@Before
 	public void setUp() throws Exception {
-		dispatcher = new MessageDispatcher<EventType>(false);
+		dispatcher = new MessageDispatcher<EventType>(true);
 		listener = new MockMessageListener();
 		dispatcher.registerListener(listener);
 	}
@@ -28,10 +28,6 @@ public class MessageDispatcherTest {
 	public void testDispatchMessage() {
 		startTime = System.nanoTime();
 		dispatcher.dispatchMessage(EventType.TEST_EVENT, 12345, "abc");
-		try {
-			Thread.sleep(10);
-		} catch (InterruptedException e) {
-		}
 		assertNotNull(listener.eventType);
 		assertEquals(EventType.TEST_EVENT, listener.eventType);
 		assertNotNull(listener.params);
@@ -43,10 +39,6 @@ public class MessageDispatcherTest {
 	@Test
 	public void testDispatchMessageAnotherEvent() {
 		dispatcher.dispatchMessage(EventType.ANOTHER_EVENT, 12345, "abc");
-		try {
-			Thread.sleep(10);
-		} catch (InterruptedException e) {
-		}
 		assertNull(listener.eventType);
 		assertNull(listener.params);
 	}

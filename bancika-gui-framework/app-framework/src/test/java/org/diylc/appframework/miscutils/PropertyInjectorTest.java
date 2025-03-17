@@ -47,7 +47,7 @@ public class PropertyInjectorTest {
 	@Test
 	public void testInjectPropretiesString() {
 		Properties props = new Properties();
-		boolean expected = true;
+		String expected = "test string";
 		props.put(PropertyInjectorTest.class.getName() + ".stringValue", expected);
 		PropertyInjector.injectProperties(props);
 		assertEquals(expected, stringValue);
