@@ -22,6 +22,11 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
 
 /**
  * Utility class that exports {@link JTable} to:
@@ -64,19 +69,20 @@ public class TableExporter {
 		HSSFRow headerRow = bomSheet.createRow(0);
 		HSSFCellStyle headerStyle = wb.createCellStyle();
 		HSSFFont font = wb.createFont();
-		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+		font.setBold(true);
 		font.setFontName("Tahoma");
 		headerStyle.setFont(font);
-		headerStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-		headerStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
-		headerStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-		headerStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
-		headerStyle.setFillForegroundColor(HSSFColor.SKY_BLUE.index);
+		headerStyle.setBorderBottom(BorderStyle.THIN);
+		headerStyle.setBorderTop(BorderStyle.THIN);
+		headerStyle.setBorderLeft(BorderStyle.THIN);
+		headerStyle.setBorderRight(BorderStyle.THIN);
+		headerStyle.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
+		headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		headerStyle.setAlignment(HorizontalAlignment.LEFT);
 
-		headerStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 		for (int i = 0; i < table.getColumnModel().getColumnCount(); i++) {
 			HSSFCell cell = headerRow.createCell(i);
-			cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			cell.setCellType(CellType.STRING);
 			cell.setCellValue(table.getColumnName(i));
 			cell.setCellStyle(headerStyle);
 		}
@@ -86,10 +92,11 @@ public class TableExporter {
 		font = wb.createFont();
 		font.setFontName("Tahoma");
 		cellStyle.setFont(font);
-		cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-		cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
-		cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-		cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		cellStyle.setBorderBottom(BorderStyle.THIN);
+		cellStyle.setBorderTop(BorderStyle.THIN);
+		cellStyle.setBorderLeft(BorderStyle.THIN);
+		cellStyle.setBorderRight(BorderStyle.THIN);
+		cellStyle.setAlignment(HorizontalAlignment.LEFT);
 
 		for (int j = 0; j < table.getRowCount(); j++) {
 			HSSFRow row = bomSheet.createRow(j + 1);
@@ -102,26 +109,26 @@ public class TableExporter {
 					Class<?> clazz = table.getModel().getColumnClass(columnIdx);
 
 					if (short.class.isAssignableFrom(clazz) || Short.class.isAssignableFrom(clazz)) {
-						cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+						cell.setCellType(CellType.NUMERIC);
 						cell.setCellValue(((Short) value).intValue());
 					} else if (int.class.isAssignableFrom(clazz)
 							|| Integer.class.isAssignableFrom(clazz)) {
-						cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+						cell.setCellType(CellType.NUMERIC);
 						cell.setCellValue((Integer) value);
 					} else if (long.class.isAssignableFrom(clazz)
 							|| Long.class.isAssignableFrom(clazz)) {
-						cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+						cell.setCellType(CellType.NUMERIC);
 						cell.setCellValue(((Long) value).intValue());
 					} else if (float.class.isAssignableFrom(clazz)
 							|| Float.class.isAssignableFrom(clazz)) {
-						cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+						cell.setCellType(CellType.NUMERIC);
 						cell.setCellValue(((Float) value).doubleValue());
 					} else if (double.class.isAssignableFrom(clazz)
 							|| Double.class.isAssignableFrom(clazz)) {
-						cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+						cell.setCellType(CellType.NUMERIC);
 						cell.setCellValue((Double) value);
 					} else {
-						cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+						cell.setCellType(CellType.STRING);
 						cell.setCellValue(value.toString());
 					}
 				}
