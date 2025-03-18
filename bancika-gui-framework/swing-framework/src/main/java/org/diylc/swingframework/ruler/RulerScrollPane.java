@@ -198,9 +198,9 @@ public class RulerScrollPane extends JScrollPane {
       public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("dragPoint")) {
           horizontalRuler.setIndicatorValue(((Long) evt.getOldValue()).intValue());
-          horizontalRuler.repaint();
+          // horizontalRuler.repaint();
           verticalRuler.setIndicatorValue(((Long) evt.getNewValue()).intValue());
-          verticalRuler.repaint();
+          // verticalRuler.repaint();
         }
       }
     });
@@ -210,25 +210,25 @@ public class RulerScrollPane extends JScrollPane {
       @Override
       public void mouseMoved(MouseEvent e) {
         horizontalRuler.setIndicatorValue(e.getX());
-        horizontalRuler.repaint();
+        // horizontalRuler.repaint();
         verticalRuler.setIndicatorValue(e.getY());
-        verticalRuler.repaint();
+        // verticalRuler.repaint();
       }
 
       @Override
       public void mouseDragged(MouseEvent e) {
         horizontalRuler.setIndicatorValue(e.getX());
-        horizontalRuler.repaint();
+        // horizontalRuler.repaint();
         verticalRuler.setIndicatorValue(e.getY());
-        verticalRuler.repaint();
+        // verticalRuler.repaint();
       }
 
       @Override
       public void mouseExited(MouseEvent e) {
         horizontalRuler.setIndicatorValue(-1);
-        horizontalRuler.repaint();
+        // horizontalRuler.repaint();
         verticalRuler.setIndicatorValue(-1);
-        verticalRuler.repaint();
+        // verticalRuler.repaint();
       }
     });
 

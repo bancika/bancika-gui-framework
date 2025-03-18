@@ -18,6 +18,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.VolatileImage;
 import java.util.Objects;
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 
 /**
  * {@link JComponent} that renders ruler. It features configurable units (cm or
@@ -49,8 +50,8 @@ public class Ruler extends JComponent {
 	private float ticksPerUnit;
 	private long lastRepaintTime = 0;
 
-	private Graphics bufferGraphics;
-	private Image bufferImage;
+	// private Graphics bufferGraphics;
+	// private Image bufferImage;
 	
 	private GraphicsConfiguration screenGraphicsConfiguration;
 	public boolean useHardwareAcceleration = false;
@@ -65,6 +66,9 @@ public class Ruler extends JComponent {
 	private InchSubdivision inSubdivision;
 
 	private Rectangle2D selectionRect = null;
+
+	private javax.swing.Timer repaintTimer = null;
+	private boolean isRepaintScheduled = false;
 
 	public Ruler(int orientation, boolean isMetric) {
 		this(orientation, isMetric, 0, 0);
@@ -88,28 +92,28 @@ public class Ruler extends JComponent {
 
 			@Override
 			public void componentResized(ComponentEvent e) {
-			  bufferImage = null;
+			//   bufferImage = null;
 			}
 		});
 	}
 	
-	protected void createBufferImage() {
-	  Rectangle visibleRect = this.getVisibleRect();
-	  if (useHardwareAcceleration) {
-        bufferImage = getScreenGraphicsConfiguration().createCompatibleVolatileImage((int)visibleRect.getWidth(), 
-            (int)visibleRect.getHeight());
-          ((VolatileImage) bufferImage).validate(screenGraphicsConfiguration);
-        } else {
-          bufferImage = createImage((int)visibleRect.getWidth(), 
-              (int)visibleRect.getHeight());
-        }
+	// protected void createBufferImage() {
+	//   Rectangle visibleRect = this.getVisibleRect();
+	//   if (useHardwareAcceleration) {
+    //     bufferImage = getScreenGraphicsConfiguration().createCompatibleVolatileImage((int)getWidth(), 
+    //         (int)getHeight());
+    //       ((VolatileImage) bufferImage).validate(screenGraphicsConfiguration);
+    //     } else {
+    //       bufferImage = createImage((int)getWidth(), 
+    //           (int)getHeight());
+    //     }
 
-        bufferGraphics = bufferImage.getGraphics();    
-	}
+    //     bufferGraphics = bufferImage.getGraphics();    
+	// }
 	
     public void setUseHardwareAcceleration(boolean useHardwareAcceleration) {
       this.useHardwareAcceleration = useHardwareAcceleration;
-      bufferImage = null;
+    //   bufferImage = null;
     }
 
     public void setSelectionRect(Rectangle2D selectionRect) {
@@ -219,25 +223,25 @@ public class Ruler extends JComponent {
 	}
 
 	protected void paintComponent(Graphics g) {
-	    if (bufferImage == null)
-	      createBufferImage();
-		if (bufferGraphics == null) {
-			return;
-		}
+	    // if (bufferImage == null)
+	    //   createBufferImage();
+		// if (bufferGraphics == null) {
+		// 	return;
+		// }
 		
 		Graphics2D g2d = (Graphics2D) g;
 		Rectangle visibleRect = this.getVisibleRect();
-	    g2d.translate(-visibleRect.x, -visibleRect.y);
-	    g2d.setClip(visibleRect);
+		g2d.setClip(visibleRect);
+	    // g2d.translate(-visibleRect.x, -visibleRect.y);
 	    
 		Rectangle clipRect = g.getClipBounds();
 
-		bufferGraphics.setColor(COLOR);
-		bufferGraphics.fillRect(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
+		g2d.setColor(COLOR);
+		g2d.fillRect(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
 
 		// Do the ruler labels in a small font that's black.
-		bufferGraphics.setFont(new Font("SansSerif", Font.PLAIN, 10));
-		bufferGraphics.setColor(Color.black);
+		g2d.setFont(new Font("SansSerif", Font.PLAIN, 10));
+		g2d.setColor(Color.black);
 		
 		double offset = (int) (zeroLocation * unitSize);
 
@@ -324,19 +328,19 @@ public class Ruler extends JComponent {
 
 			if (tickLength != 0) {
 				if (orientation == HORIZONTAL) {
-					bufferGraphics.drawLine(x, SIZE - 1, x, SIZE - tickLength
+					g2d.drawLine(x, SIZE - 1, x, SIZE - tickLength
 							- 1);
 					if (text != null) {
-						bufferGraphics.drawString(text, x + 2, 15);
+						g2d.drawString(text, x + 2, 15);
 					}
 				} else {
-					bufferGraphics.drawLine(SIZE - 1, x, SIZE - tickLength - 1,
+					g2d.drawLine(SIZE - 1, x, SIZE - tickLength - 1,
 							x);
 					if (text != null) {
-						FontMetrics fm = bufferGraphics.getFontMetrics();
-						bufferGraphics.drawString(text, SIZE
+						FontMetrics fm = g2d.getFontMetrics();
+						g2d.drawString(text, SIZE
 								- (int) fm
-										.getStringBounds(text, bufferGraphics)
+										.getStringBounds(text, g2d)
 										.getWidth() - 2, x + 10);
 					}
 				}
@@ -347,15 +351,15 @@ public class Ruler extends JComponent {
 
 		// highlight value
 		if (indicatorValue >= 0) {
-			bufferGraphics.setColor(CURSOR_COLOR);
+			g2d.setColor(CURSOR_COLOR);
 			if (orientation == HORIZONTAL) {
 				if (indicatorValue < getWidth()) {
-					bufferGraphics.drawLine(indicatorValue, 0, indicatorValue,
+					g2d.drawLine(indicatorValue, 0, indicatorValue,
 							SIZE - 1);
 				}
 			} else {
 				if (indicatorValue < getHeight()) {
-					bufferGraphics.drawLine(0, indicatorValue, SIZE - 1,
+					g2d.drawLine(0, indicatorValue, SIZE - 1,
 							indicatorValue);
 				}
 			}
@@ -363,19 +367,19 @@ public class Ruler extends JComponent {
 
 		// selection
 		if (selectionRect != null) {
-			bufferGraphics.setColor(SELECTION_COLOR);
+			g2d.setColor(SELECTION_COLOR);
 			if (orientation == HORIZONTAL) {
-				bufferGraphics.drawLine((int) selectionRect.getX(), 0,
+				g2d.drawLine((int) selectionRect.getX(), 0,
 						(int) selectionRect.getX(), SIZE - 1);
-				bufferGraphics
+				g2d
 						.drawLine((int) (selectionRect.getX() + selectionRect
 								.getWidth()), 0,
 								(int) (selectionRect.getX() + selectionRect
 										.getWidth()), SIZE - 1);
 			} else {
-				bufferGraphics.drawLine(0, (int) selectionRect.getY(),
+				g2d.drawLine(0, (int) selectionRect.getY(),
 						SIZE - 1, (int) selectionRect.getY());
-				bufferGraphics
+				g2d
 						.drawLine(0,
 								(int) (selectionRect.getY() + selectionRect
 										.getHeight()), SIZE - 1,
@@ -385,14 +389,14 @@ public class Ruler extends JComponent {
 		}
 
 		// lines
-		bufferGraphics.setColor(Color.black);
+		g2d.setColor(Color.black);
 		if (orientation == HORIZONTAL) {
-			bufferGraphics.drawLine(0, SIZE - 1, getWidth(), SIZE - 1);
+			g2d.drawLine(0, SIZE - 1, getWidth(), SIZE - 1);
 		} else {
-			bufferGraphics.drawLine(SIZE - 1, 0, SIZE - 1, getHeight());
+			g2d.drawLine(SIZE - 1, 0, SIZE - 1, getHeight());
 		}
-		// Draw the buffer
-		g.drawImage(bufferImage, 0, 0, this);
+		// // Draw the buffer
+		// g.drawImage(bufferImage, 0, 0, this);
 	}
 
 	@Override
@@ -405,20 +409,23 @@ public class Ruler extends JComponent {
 	}
 
 	private void throttledRepaint() {
-		long currentTime = System.currentTimeMillis();
-		if (currentTime - lastRepaintTime >= REPAINT_THROTTLE_MS) {
-			repaint();
-			lastRepaintTime = currentTime;
-		} else {
-			// Schedule another repaint after the throttling period to ensure we show the latest value
-			javax.swing.Timer timer = new javax.swing.Timer((int)(REPAINT_THROTTLE_MS - (currentTime - lastRepaintTime)), null);
-			timer.addActionListener(e -> {
-				repaint();
-				lastRepaintTime = System.currentTimeMillis();
-				timer.stop();
-			});
-			timer.setRepeats(false);
-			timer.start();
+		if (!isRepaintScheduled) {
+			isRepaintScheduled = true;
+			if (repaintTimer == null) {
+				repaintTimer = new javax.swing.Timer((int)REPAINT_THROTTLE_MS, e -> {
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							repaint();
+						}
+					});
+					lastRepaintTime = System.currentTimeMillis();
+					isRepaintScheduled = false;
+					repaintTimer.stop();
+				});
+				repaintTimer.setRepeats(false);
+			}
+			repaintTimer.restart();
 		}
 	}
 }

@@ -9,6 +9,12 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import java.awt.Image;
+
+import org.apache.log4j.Logger;
+
 public enum CursorLoader {
   
   ScrollCenter("scroll_center.png"), ScrollN("scroll_n.png"), ScrollNE("scroll_ne.png"), ScrollE("scroll_e.png"), ScrollSE("scroll_se.png"), 
@@ -25,11 +31,11 @@ public enum CursorLoader {
     if (cursor == null) {
       Toolkit toolkit = Toolkit.getDefaultToolkit();
       URL imgURL = getClass().getResource(name);
-      BufferedImage image;
+      BufferedImage image = null;
       try {
-        image = ImageIO.read(imgURL);
+        image = ImageIO.read(getClass().getResourceAsStream("/swing-framework-images/" + name));
       } catch (IOException e) {
-        e.printStackTrace();
+        Logger.getLogger(CursorLoader.class).error("Couldn't load file: " + name);
         return Cursor.getDefaultCursor();
       }
       int width = image.getWidth(null);
