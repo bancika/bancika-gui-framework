@@ -63,9 +63,49 @@ public class TextDialog extends JDialog {
 		JPanel buttonPanel = new JPanel(new GridBagLayout());
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));	
 
+		JButton saveButton = new JButton("Save");
+		saveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+				fileChooser.setDialogTitle("Save HTML File");
+				fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+					@Override
+					public boolean accept(java.io.File f) {
+						return f.isDirectory() || f.getName().toLowerCase().endsWith(".html");
+					}
+
+					@Override
+					public String getDescription() {
+						return "HTML Files (*.html)";
+					}
+				});
+				
+				if (fileChooser.showSaveDialog(TextDialog.this) == javax.swing.JFileChooser.APPROVE_OPTION) {
+					java.io.File file = fileChooser.getSelectedFile();
+					if (!file.getName().toLowerCase().endsWith(".html")) {
+						file = new java.io.File(file.getAbsolutePath() + ".html");
+					}
+					
+					try (java.io.FileWriter writer = new java.io.FileWriter(file)) {
+						writer.write(htmlText);
+						javax.swing.JOptionPane.showMessageDialog(TextDialog.this, 
+							"File saved successfully!", 
+							"Success", 
+							javax.swing.JOptionPane.INFORMATION_MESSAGE);
+					} catch (java.io.IOException ex) {
+						javax.swing.JOptionPane.showMessageDialog(TextDialog.this, 
+							"Error saving file: " + ex.getMessage(), 
+							"Error", 
+							javax.swing.JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+		});
+		buttonPanel.add(saveButton);
+
 		JButton cancelButton = new JButton("Close");
 		cancelButton.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				TextDialog.this.setVisible(false);
